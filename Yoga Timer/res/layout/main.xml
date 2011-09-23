@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    >
+<Button  
+    android:id="@+id/the_new_button"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:text="New Set"
+    android:padding="30dp"
+    android:layout_margin="5dp"
+    />
+    <Button  
+    android:id="@+id/the_saved_button"
+   	android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:text="Saved Set"
+    android:padding="30dp"
+    android:layout_margin="5dp"
+    />
+    </LinearLayout>
+</RelativeLayout>

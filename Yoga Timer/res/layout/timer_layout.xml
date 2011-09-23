@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout 
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<LinearLayout 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:layout_alignParentTop="true"
+		android:id="@+id/timer_container">
+				<TextView 
+						android:text=""
+						android:id="@+id/time_display"
+						android:textSize="80dp"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content"
+					/>
+
+	</LinearLayout>
+		<LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_below="@id/timer_container"
+			android:id="@+id/name_pause_container"
+			android:layout_centerHorizontal="true">
+			<TextView 
+				android:text="Bow Pose"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/exercise_name"
+				android:gravity="left"
+				android:textSize="30dp"
+				android:layout_marginRight="50dp"
+				/>
+		<Button 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Pause"
+			android:id="@+id/pause_button"
+			android:gravity="right"
+			android:textSize="30dp"
+		/>
+		</LinearLayout>
+	<ListView 
+		android:layout_width="fill_parent" 
+		android:id="@android:id/list"
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/name_pause_container"
+		android:layout_above="@+id/reset_container"
+	/>
+	<RelativeLayout 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:id="@id/reset_container"
+		android:layout_alignParentBottom="true">
+		
+		<TextView 
+			android:text="Restart From:"
+			android:id="@+id/reset_label"
+			android:textSize="25dp"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content" 
+			android:layout_centerHorizontal="true"/>
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:id="@+id/button_container"
+			android:layout_below="@id/reset_label"
+			>
+			<Button 
+				android:layout_width="fill_parent"
+				android:id="@+id/reset_set_button" 
+				android:text="Beginning"
+				android:layout_height="wrap_content"
+				android:textSize="25dp"
+				android:layout_weight="1"
+				></Button>
+			
+			<Button 
+				android:layout_width="fill_parent" 
+				android:text="Exercise"
+				android:layout_height="wrap_content" 
+				android:id="@+id/reset_exercise"
+				android:layout_weight="1"
+				android:textSize="25dp"
+				>
+			</Button>
+		</LinearLayout>
+	</RelativeLayout>
+
+
+</RelativeLayout >
