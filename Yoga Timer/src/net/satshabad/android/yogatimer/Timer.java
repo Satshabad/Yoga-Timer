@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class Timer extends ListActivity
 {
    
-   public ArrayList<Exercise> exerciseList;
+   public ArrayList<Exercise> ext;
    public long timeOnClock;   
    public boolean paused = false;
    public Exercise currentExercise;
