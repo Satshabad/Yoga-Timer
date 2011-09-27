@@ -166,6 +166,8 @@ public class Timer extends ListActivity
          }
   
          timeDisplay.setText("00:00");
+         resetExercise.setClickable(false);
+         resetFromStart.setClickable(false);
          MediaPlayer player = MediaPlayer.create(Timer.this, R.raw.jap_bell);
          player.start();
          player.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
@@ -175,8 +177,11 @@ public class Timer extends ListActivity
                if (!(exerciseList.isEmpty())){
                   exerciseList.remove(0);
                   adapter.notifyDataSetChanged();
+                  resetExercise.setClickable(true);
+                  resetFromStart.setClickable(true);
                   if (!currentExercise.isPaused())
                   {  
+                     
                      startCount(currentExercise);
                   }
                   else
