@@ -16,9 +16,8 @@ import android.widget.TextView;
 public class Timer extends ListActivity
 {
    
-   public ArrayList<Exercise> ext;
+   public ArrayList<Exercise> exerciseList;
    public long timeOnClock;   
-   public boolean paused = false;
    public Exercise currentExercise;
    public MyCounter theCountDown;
    public ArrayList<Exercise> masterExerciseList;
@@ -59,7 +58,7 @@ public class Timer extends ListActivity
          @Override
          public void onClick(View arg0)
          {
-           paused = false;
+           currentExercise.setUnPaused();
            theCountDown.cancel();
            startCount(currentExercise);
          }
@@ -95,24 +94,24 @@ public class Timer extends ListActivity
       currentExerciseName.setText(ex.getName());
 
       long timeForCountDown;
-      if (paused){
+      if (currentExercise.isPaused()){
          timeForCountDown = ex.getPauseTime();
       }
       else 
          timeForCountDown = ex.getTime();
          
-      paused = false;
+      currentExercise.setUnPaused();
       theCountDown = new MyCounter(timeForCountDown, 1000, ex);
       theCountDown.start();
 
    }
    
    public void pause(){
-      if (paused){
+      if (currentExercise.isPaused()){
          startCount(currentExercise);
       }
       else {
-         paused = true;
+         currentExercise.setPaused();
          currentExercise.setPauseTime(timeOnClock);
          theCountDown.cancel(); 
       }
@@ -157,7 +156,7 @@ public class Timer extends ListActivity
                if (!(exerciseList.isEmpty())){
                   exerciseList.remove(0);
                   adapter.notifyDataSetChanged();
-                  if (!paused)
+                  if (!currentExercise.isPaused())
                   {  
                      startCount(currentExercise);
                   }

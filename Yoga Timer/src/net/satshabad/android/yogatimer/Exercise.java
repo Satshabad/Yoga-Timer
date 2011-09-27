@@ -5,14 +5,16 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Exercise implements Serializable
 {
-   String name;
-   long time;
-   long pauseTime;
+   private String name;
+   private long time;
+   private long pauseTime;
+   private boolean paused;
    
    public Exercise(String s, long t)
    {
       name = s;
       time = t;
+      paused = false;
    }
 
    public String getName()
@@ -53,6 +55,17 @@ public class Exercise implements Serializable
       return time;
    }
    
+   public boolean isPaused(){
+      return paused;
+   }
+   
+   public void setPaused(){
+      paused = true;
+   }
+   
+   public void setUnPaused(){
+      paused = false;
+   }
    public void setPauseTime(long t){
       pauseTime = t;
    }
