@@ -1,5 +1,6 @@
 package net.satshabad.android.yogatimer;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -10,7 +11,11 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -22,11 +27,12 @@ public class Timer extends ListActivity
    public long timeOnClock;   
    public Exercise currentExercise;
    public MyCounter theCountDown;
-   //public ArrayList<Exercise> masterExerciseList;
+
    public Stack<Exercise> completedExerciseStack;
    
    private TextView timeDisplay;
    private TextView currentExerciseName;
+   private ListView theListView;
    
    private ExerciseAdapter adapter;
    
@@ -54,6 +60,30 @@ public class Timer extends ListActivity
       completedExerciseStack = new Stack<Exercise>();
       currentExerciseName = (TextView)findViewById(R.id.exercise_name);
       timeDisplay = (TextView)findViewById(R.id.time_display);
+      theListView = getListView();
+      
+      theListView.setOnItemClickListener(new OnItemClickListener(){
+
+
+         @Override
+         public void onItemClick(AdapterView<?> arg0, View v, int position,
+               long arg3)
+         {
+            theCountDown.cancel();
+            int p =position;
+            Log.v("Stack", Integer.toString(p));
+             while (p != 0){
+                exerciseList.remove(0);
+                adapter.notifyDataSetChanged();
+                p--;
+                }
+                currentExercise = exerciseList.remove(0);
+                adapter.notifyDataSetChanged();
+                restartExercise();
+             }
+            
+         });
+      
       
       resetExercise.setOnClickListener(new Button.OnClickListener(){
 
