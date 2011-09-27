@@ -1,12 +1,14 @@
 package net.satshabad.android.yogatimer;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,7 +22,8 @@ public class Timer extends ListActivity
    public long timeOnClock;   
    public Exercise currentExercise;
    public MyCounter theCountDown;
-   public ArrayList<Exercise> masterExerciseList;
+   //public ArrayList<Exercise> masterExerciseList;
+   public Stack<Exercise> completedExerciseStack;
    
    private TextView timeDisplay;
    private TextView currentExerciseName;
@@ -42,14 +45,13 @@ public class Timer extends ListActivity
       Intent thisIntent = getIntent();
       Bundle listBundle =  thisIntent.getExtras();
       exerciseList = (ArrayList<Exercise>) listBundle.getSerializable("thelist");
-      masterExerciseList = (ArrayList<Exercise>) exerciseList.clone();
       adapter = new ExerciseAdapter(this, exerciseList);
       setListAdapter(adapter);
 
       resetExercise = (Button)findViewById(R.id.reset_exercise);
       resetFromStart = (Button)findViewById(R.id.reset_set_button);
       pause = (Button)findViewById(R.id.pause_button);
-
+      completedExerciseStack = new Stack<Exercise>();
       currentExerciseName = (TextView)findViewById(R.id.exercise_name);
       timeDisplay = (TextView)findViewById(R.id.time_display);
       
@@ -58,9 +60,7 @@ public class Timer extends ListActivity
          @Override
          public void onClick(View arg0)
          {
-           currentExercise.setUnPaused();
-           theCountDown.cancel();
-           startCount(currentExercise);
+            restartExercise();
          }
          
       });
@@ -90,6 +90,8 @@ public class Timer extends ListActivity
       startCount(currentExercise);
    }
    
+   
+   
    public void startCount(final Exercise ex){
       currentExerciseName.setText(ex.getName());
 
@@ -106,6 +108,13 @@ public class Timer extends ListActivity
 
    }
    
+   public void restartExercise()
+   {
+      currentExercise.setUnPaused();
+      theCountDown.cancel();
+      startCount(currentExercise);
+   }
+   
    public void pause(){
       if (currentExercise.isPaused()){
          startCount(currentExercise);
@@ -119,13 +128,22 @@ public class Timer extends ListActivity
    
    public void restartFromTop(){
       theCountDown.cancel();
-      exerciseList = masterExerciseList;
-      masterExerciseList = (ArrayList<Exercise>) masterExerciseList.clone();
-      adapter = new ExerciseAdapter(this, exerciseList);
-      setListAdapter(adapter);
-      currentExercise = exerciseList.remove(0);
-      adapter.notifyDataSetChanged();
-      startCount(currentExercise);
+      
+      if (completedExerciseStack.isEmpty()){
+         restartExercise();
+      }
+      else {
+         exerciseList.add(0, currentExercise);
+         while (!completedExerciseStack.isEmpty()){
+            exerciseList.add(0, completedExerciseStack.pop());
+         }
+      
+         adapter = new ExerciseAdapter(this, exerciseList);
+         setListAdapter(adapter);
+         currentExercise = exerciseList.remove(0);
+         adapter.notifyDataSetChanged();
+         startCount(currentExercise);
+      }
    }
    
    
@@ -142,6 +160,7 @@ public class Timer extends ListActivity
       public void onFinish()
       {
          if (!(exerciseList.isEmpty())){
+            completedExerciseStack.push(currentExercise);
             currentExercise = exerciseList.get(0);
             timeOnClock = currentExercise.getTime();
          }
