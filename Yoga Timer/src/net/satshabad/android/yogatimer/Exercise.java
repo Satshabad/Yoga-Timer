@@ -10,6 +10,7 @@ public class Exercise implements Serializable
    private long pauseTime;
    private boolean paused;
    
+   //this intializes the Exercise
    public Exercise(String s, long t)
    {
       name = s;
