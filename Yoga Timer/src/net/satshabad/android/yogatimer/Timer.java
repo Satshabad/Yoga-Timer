@@ -22,7 +22,8 @@ import android.widget.TextView;
 
 public class Timer extends ListActivity
 {
-   
+  
+    
    public ArrayList<Exercise> exerciseList;
    public long timeOnClock;   
    public Exercise currentExercise;
