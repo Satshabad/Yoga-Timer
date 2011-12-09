@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:id= "@+id/timer"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    
+    <LinearLayout 
+				android:orientation="vertical"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content">
+				
+				<LinearLayout android:orientation="horizontal"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:gravity="center">
+				<TextView 
+				android:text="0"
+				android:id="@+id/time_display_fourth_digit"
+				android:textSize="80dp"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+			/>
+			<TextView 
+				android:text="0"
+				android:id="@+id/time_display_third_digit"
+				android:textSize="80dp"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+			/>
+			<TextView 
+				android:text=":"
+				android:id="@+id/time_display_colon"
+				android:textSize="80dp"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+			/>
+			<TextView 
+				android:text="0"
+				android:id="@+id/time_display_second_digit"
+				android:textSize="80dp"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+			/>
+			<TextView 
+				android:text="0"
+				android:id="@+id/time_display_first_digit"
+				android:textSize="80dp"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+			/>
+					
+				</LinearLayout>
+				<RelativeLayout 
+					android:layout_width="fill_parent" 
+					android:layout_height="wrap_content">
+					<TextView 
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content"
+						android:text="Name: "
+						android:textSize="25dp"
+						android:id="@+id/name_label"
+					/>
+					
+					<EditText 
+						android:id="@+id/exercise_name"
+						android:text="Exercise 1"
+						android:layout_width="fill_parent" 
+						android:layout_height="wrap_content"
+						android:layout_toRightOf="@id/name_label"
+						android:layout_alignBaseline="@id/name_label"
+						android:singleLine="true"
+					/>
+				</RelativeLayout>
+							
+			</LinearLayout>
+			
+			<RelativeLayout 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content">
+			
+			<Button 
+				style="@style/timer_button"
+				android:text="1"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentLeft="true"
+				android:id="@+id/button_one"
+			/>
+			<Button 
+				style="@style/timer_button"
+				android:text="2"
+				android:layout_alignParentTop="true"
+				android:layout_centerHorizontal="true"
+				android:id="@+id/button_two"
+			/>
+			<Button 
+				android:text="3"
+				style="@style/timer_button"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentRight="true"
+				android:id="@+id/button_three"
+			/>
+			<Button 
+				android:text="4"
+				style="@style/timer_button"
+				android:layout_below="@id/button_one"
+				android:layout_alignParentLeft="true"
+				android:id="@+id/button_four"
+			/>
+			
+			<Button 
+				android:text="5"
+				style="@style/timer_button"
+				android:layout_below="@id/button_two"
+				android:layout_centerHorizontal="true"
+				android:id="@+id/button_five"
+			/>
+			
+			<Button 
+				android:text="6"
+				style="@style/timer_button"
+				android:layout_below="@id/button_three"
+				android:layout_alignParentRight="true"
+				android:id="@+id/button_six"
+			/>
+			<Button 
+				android:text="7"
+				style="@style/timer_button"
+				android:layout_below="@id/button_four"
+				android:layout_alignParentLeft="true"
+				android:id="@+id/button_seven"
+			/>
+			
+			<Button 
+				android:text="8"
+				style="@style/timer_button"
+				android:layout_below="@id/button_five"
+				android:layout_centerHorizontal="true"
+				android:id="@+id/button_eight"
+			/>
+			
+			<Button 
+				android:text="9"
+				style="@style/timer_button"
+				android:layout_below="@id/button_six"
+				android:layout_alignParentRight="true"
+				android:id="@+id/button_nine"
+			/>
+			<Button 
+				android:text="Clear"
+				style="@style/timer_button"
+				android:layout_below="@id/button_seven"
+				android:layout_alignParentLeft="true"
+				android:id="@+id/button_clear"
+			/>
+			<Button 
+				android:text="0"
+				style="@style/timer_button"
+				android:layout_below="@id/button_eight"
+				android:layout_centerHorizontal="true"
+				android:id="@+id/button_zero"
+			/>
+			<Button 
+				
+				android:text="OK"
+				style="@style/timer_button"
+				android:layout_below="@id/button_nine"
+				android:layout_alignParentRight="true"
+				android:id="@+id/button_ok"
+			/>
+			</RelativeLayout>
+    
+</LinearLayout>
