@@ -1,69 +1,74 @@
 package net.satshabad.android.yogatimer;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-
 public class TimerSetter extends LinearLayout {
 
+    /**
+     * The listener object that contains the method to call when the OK button
+     * is pressed
+     */
     OnTimeSetListener timeSetListener = null;
 
-    
     /**
-     * A Text View of the first digit in the time display contained in the timer
-     * setting drawer
+     * A Text View of the first digit in the time display
      */
     private TextView firstDigit;
 
     /**
-     * A Text View of the second digit in the time display contained in the
-     * timer setting drawer
+     * A Text View of the second digit in the time display
      */
     private TextView secondDigit;
 
     /**
-     * A Text View of the third digit in the time display contained in the timer
-     * setting drawer
+     * A Text View of the third digit in the time display
      */
     private TextView thirdDigit;
 
     /**
-     * A Text View of the fourth digit in the time display contained in the
-     * timer setting drawer
+     * A Text View of the fourth digit in the time display
      */
     private TextView fourthDigit;
-    
+
     /**
-     * A view containing the name of the exercise, which can be changed by the
-     * user
+     * A view containing the name of the timer, which can be changed by the user
      */
-    private EditText exerciseName;
-    
+    private EditText name;
+
     /**
-     * The total number of times the user has tapped on any number button
+     * The total number of times the user has tapped on any number button. Used
+     * to correctly update the display. Probably could be refractored to avoid
+     * using global variables
      */
     private int numberOfClicks = 0;
-    
-    public TimerSetter(Context context) {
-        super(context);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    public TimerSetter(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.timersetter_layout, this);
+
+        // grab the display views
         firstDigit = (TextView) findViewById(R.id.time_display_first_digit);
         secondDigit = (TextView) findViewById(R.id.time_display_second_digit);
         thirdDigit = (TextView) findViewById(R.id.time_display_third_digit);
         fourthDigit = (TextView) findViewById(R.id.time_display_fourth_digit);
-        TimerSetter.OnTimerButtonClickListener clickListener = new OnTimerButtonClickListener();
-        Button one = (Button) findViewById(R.id.button_one);
-        one.setOnClickListener(clickListener);
+        name = (EditText) findViewById(R.id.timer_name);
         
+        // use the innerclass a click listener for all these buttons, which lead
+        // all to the same method, timerClick
+        TimerSetter.OnTimerButtonClickListener clickListener = new OnTimerButtonClickListener();
+
+        // set click listeners for all the buttons
+        findViewById(R.id.button_one).setOnClickListener(clickListener);
         findViewById(R.id.button_two).setOnClickListener(clickListener);
         findViewById(R.id.button_three).setOnClickListener(clickListener);
         findViewById(R.id.button_four).setOnClickListener(clickListener);
@@ -75,11 +80,21 @@ public class TimerSetter extends LinearLayout {
         findViewById(R.id.button_zero).setOnClickListener(clickListener);
         findViewById(R.id.button_clear).setOnClickListener(clickListener);
         findViewById(R.id.button_ok).setOnClickListener(clickListener);
-        
-        
+
     }
 
-    public void timerClick(View v) {
+    /**
+     * Called whenever a button (0 - 9, clear or OK) is pressed. Takes the
+     * appropriate action. Either updating the display or clearing it or in the
+     * case of "OK" calling the call back method onTimeSet so user knows that
+     * the timer has been set.
+     * 
+     * @param v
+     *            the view which activated the call
+     */
+    private void timerClick(View v) {
+
+        // vibrate when a button is pressed
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (v.getId()) {
         case R.id.button_one: {
@@ -144,6 +159,9 @@ public class TimerSetter extends LinearLayout {
             break;
         case R.id.button_ok: {
             long time = getTime();
+            if (time == 0) {
+                return;
+            }
             String name = getName();
             OnTimeSet(name, time);
         }
@@ -152,12 +170,26 @@ public class TimerSetter extends LinearLayout {
             updateDisplay(-1);
         }
             break;
+        default:
+
+            // this method should never be passed a view that is not one of the
+            // above buttons
+            assert (false);
+
         }
 
     }
-    
+
+    /**
+     * Updates the timer display, adding the new passed digit to the end of the
+     * display
+     * 
+     * @param n
+     *            the digit to be added, if -1 then the display will be cleared
+     */
     private void updateDisplay(int n) {
 
+        // clear the display back to zeros
         if (n == -1) {
             firstDigit.setText("0");
             secondDigit.setText("0");
@@ -166,6 +198,8 @@ public class TimerSetter extends LinearLayout {
             numberOfClicks = 0;
         }
 
+        // keeping track of the number of clicks lets the display update the
+        // right digit
         if (numberOfClicks == 1) {
             Integer digit = new Integer(n);
             firstDigit.setText(digit.toString());
@@ -194,6 +228,11 @@ public class TimerSetter extends LinearLayout {
 
     }
 
+    /**
+     * Gets the length of the timer from the display
+     * 
+     * @return the timer length in milliseconds
+     */
     private long getTime() {
         int fourth = Integer.parseInt(fourthDigit.getText().toString());
         int third = Integer.parseInt(thirdDigit.getText().toString());
@@ -202,47 +241,46 @@ public class TimerSetter extends LinearLayout {
         long seconds = (long) (second * 10) + first;
         long minutes = (long) (fourth * 10) + third;
         long time = (seconds * 1000) + (minutes * 60000);
+
+        // clear the display
         updateDisplay(-1);
         return time;
     }
 
+    /**
+     * Retrieves the name of the timer from the edittext box
+     * 
+     * @return the name of timer
+     */
     private String getName() {
-        exerciseName = (EditText) findViewById(R.id.exercise_name);
-        return exerciseName.getText().toString();
+        return name.getText().toString();
     }
-    
-    private void OnTimeSet(String name, long time){
-        // Check if the Listener was set, otherwise we'll get an Exception when we try to call it
-        if(!(timeSetListener==null)) {
+
+    private void OnTimeSet(String name, long time) {
+        // Check if the Listener was set, otherwise we'll get an Exception when
+        // we try to call it
+        if (!(timeSetListener == null)) {
             // Only trigger the event, when we have valid params
-            if(time != 0 && name != ""){
+            if (time != 0 && name != "") {
                 timeSetListener.onTimeSet(name, time);
             }
         }
     }
-    
+
     public void setOnTimeSetListener(OnTimeSetListener listener) {
         timeSetListener = listener;
     }
 
     public void setNextTimerName(String string) {
-       exerciseName.setText(string);
-       exerciseName.selectAll();
+        name.setText(string);
+        name.selectAll();
     }
 
-    public void onFinishInflate(){
-        super.onFinishInflate();
-
-    }
-    
-    private class OnTimerButtonClickListener implements OnClickListener{
+    private class OnTimerButtonClickListener implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-           Log.d(YogaTimerActivity.LOG_TAG, "here");
-           timerClick(v);
-        }    
+            timerClick(v);
+        }
     }
 }
-
-

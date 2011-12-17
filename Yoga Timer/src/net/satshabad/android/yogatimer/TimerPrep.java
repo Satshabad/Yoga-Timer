@@ -2,19 +2,14 @@ package net.satshabad.android.yogatimer;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.SlidingDrawer;
-import android.widget.TextView;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
 public class TimerPrep extends ListActivity {
 
@@ -41,29 +36,30 @@ public class TimerPrep extends ListActivity {
      */
     private int exerciseIndex = 0;
 
-    /**
-     * A list of number in string format
-     */
-    String[] numbers = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" };
+    private Button saveButton;
+
+    private Button startButton;
+
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_prep_layout);
-        Log.d(YogaTimerActivity.LOG_TAG, "here1");
         
-        theTimerSetter = new TimerSetter(this);
-        ViewGroup container = (ViewGroup) findViewById(R.id.content);
-        container.addView(theTimerSetter);      
-        Log.d(YogaTimerActivity.LOG_TAG, "here2");
+        startButton = (Button) findViewById(R.id.start_button);
+        saveButton = (Button) findViewById(R.id.save_button);
+        
+        theTimerSetter = (TimerSetter) findViewById(R.id.timer);
         exerciseList = new ArrayList<Exercise>();
 
+        
         adapter = new ExerciseAdapter(this, exerciseList);
         setListAdapter(adapter);
         drawer = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 
+        theTimerSetter.setNextTimerName("Exercise " + (exerciseIndex+1));
+        
         theTimerSetter.setOnTimeSetListener(new OnTimeSetListener() {
             
             @Override
@@ -71,12 +67,34 @@ public class TimerPrep extends ListActivity {
                  addExerciseToList(exerciseName, time);
             }
         });
+        
+        drawer.setOnDrawerOpenListener(new OnDrawerOpenListener(){
+
+            @Override
+            public void onDrawerOpened() {
+               startButton.setEnabled(false);
+               saveButton.setEnabled(false);
+            }
+           
+            
+        });
+        
+        drawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
+            
+            @Override
+            public void onDrawerClosed() {
+                startButton.setEnabled(true);
+                saveButton.setEnabled(true);
+                
+            }
+        });
+        
     }
 
     protected void addExerciseToList(String exerciseName, long time) {
         exerciseList.add(exerciseIndex, new Exercise(exerciseName, time));
         exerciseIndex++;
-        theTimerSetter.setNextTimerName("Exercise " + exerciseIndex);
+        theTimerSetter.setNextTimerName("Exercise " + (exerciseIndex+1));
         adapter.notifyDataSetChanged();
         drawer.close();
         
