@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * @author satshabad
+ *
+ */
 public class Timer extends ListActivity {
 
     /**
@@ -80,8 +84,14 @@ public class Timer extends ListActivity {
     private Button resetExercise;
 
     
+    /**
+     * Key to grab the exercise stack from the preferences
+     */
     private final String EXERCISE_STACK = "EXERCISE_STACK";
     
+    /**
+     * Key to grab the exercise list from the preferences
+     */
     private final String EXERCISE_LIST = "EXERCISE_LIST";
 
     @SuppressWarnings("unchecked")
@@ -222,8 +232,7 @@ public class Timer extends ListActivity {
         super.onPause();
         pauseTimer();
     }
-    
-    
+      
     public void onStop(){
             super.onStop();
             Log.d(YogaTimerActivity.LOG_TAG, "Timer/ onStop has been called");
@@ -233,9 +242,7 @@ public class Timer extends ListActivity {
         super.onDestroy();
         Log.d(YogaTimerActivity.LOG_TAG, "Timer/ onDestroy has been called");
     }
-    
-    
-    
+        
     public void startCount(final Exercise ex) {
         
         // set the display to the name of the current exercise
@@ -287,6 +294,12 @@ public class Timer extends ListActivity {
         }
     }
 
+    
+    /**
+     * This class is a custom timer that eventually should be refractored out into a separate file.
+     * @author satshabad
+     *
+     */
     public class MyCounter extends CountDownTimer {
         Exercise ex;
 

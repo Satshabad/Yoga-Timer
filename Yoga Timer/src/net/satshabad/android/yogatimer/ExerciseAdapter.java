@@ -10,6 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * This class helps display the {@link #exercises} objects correctly in a list
+ * 
+ * @author satshabad
+ *
+ */
 public class ExerciseAdapter extends ArrayAdapter<Exercise> {
     private ArrayList<Exercise> exercises;
     private Context context;
@@ -23,8 +29,10 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
         TextView exerciseName = (TextView) row.findViewById(R.id.name_in_row);
+        // set the text view text to the exercise name
         exerciseName.setText(exercises.get(position).getName());
         TextView exerciseTime = (TextView) row.findViewById(R.id.time_in_row);
+        // set the text view text to the exercise time, while formatting it
         exerciseTime.setText(Exercise.timeToString(exercises.get(position)
                 .getTime()));
 
