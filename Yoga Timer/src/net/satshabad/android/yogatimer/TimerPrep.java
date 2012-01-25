@@ -2,6 +2,9 @@ package net.satshabad.android.yogatimer;
 
 import java.util.ArrayList;
 
+import net.satshabad.android.timersetter.OnTimeSetListener;
+import net.satshabad.android.timersetter.TimerSetter;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -110,7 +113,7 @@ public class TimerPrep extends ListActivity {
 	}
 
 	public void startTimer(View v) {
-		Intent newIntent = new Intent(TimerPrep.this, Timer.class);
+		Intent newIntent = new Intent(TimerPrep.this, TimerActivity.class);
 		newIntent.putExtra("thelist", exerciseList);
 		startActivity(newIntent);
 
