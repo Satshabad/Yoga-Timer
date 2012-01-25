@@ -64,7 +64,7 @@
 			android:layout_width="fill_parent" 
 			android:layout_height="fill_parent" 
 			android:background="#9C74BD">
-			 <net.satshabad.android.yogatimer.TimerSetter android:layout_height="fill_parent" android:layout_width="fill_parent" android:id= "@+id/timer"/>
+			 <net.satshabad.android.timersetter.TimerSetter android:layout_height="fill_parent" android:layout_width="fill_parent" android:id= "@+id/timer"/>
 		</LinearLayout>
 	</SlidingDrawer>
 </RelativeLayout>

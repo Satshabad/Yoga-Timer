@@ -6,14 +6,14 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".YogaTimerActivity"
+        <activity android:name=".MainMenuActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:name=".TimerPrep"></activity>
-		<activity android:name=".Timer"></activity>
+		<activity android:name=".TimerPrepActivity"></activity>
+		<activity android:name=".TimerActivity"></activity>
     </application>
 </manifest>
