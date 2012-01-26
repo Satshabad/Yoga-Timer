@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,8 +28,9 @@ public class MainMenuActivity extends Activity {
         newSet.setOnClickListener(new OnClickListener()
       {
          @Override
-         public void onClick(View arg0)
+         public void onClick(View v)
          {
+        	v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
             Log.d(LOG_TAG, "YogaTimerActivity/ButtonClick/launchTimer");
             launchTimer(); 
          }

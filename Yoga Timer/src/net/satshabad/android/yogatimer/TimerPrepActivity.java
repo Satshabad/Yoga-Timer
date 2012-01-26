@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import net.satshabad.android.timersetter.OnTimeSetListener;
 import net.satshabad.android.timersetter.TimerSetter;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
@@ -113,7 +114,9 @@ public class TimerPrepActivity extends ListActivity {
 	}
 
 	public void startTimer(View v) {
-		Intent newIntent = new Intent(TimerPrepActivity.this, TimerActivity.class);
+		v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+		Intent newIntent = new Intent(TimerPrepActivity.this,
+				TimerActivity.class);
 		newIntent.putExtra("thelist", exerciseList);
 		startActivity(newIntent);
 

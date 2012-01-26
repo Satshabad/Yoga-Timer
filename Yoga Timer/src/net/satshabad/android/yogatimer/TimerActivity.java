@@ -7,8 +7,8 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -93,6 +93,38 @@ public class TimerActivity extends ListActivity {
 	 */
 	private final String EXERCISE_LIST = "EXERCISE_LIST";
 
+	
+	
+	public void onStart() {
+		super.onStart();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStart has been called");
+	}
+
+	public void onResume() {
+		super.onResume();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
+		unPauseTimer();
+	}
+
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		Log.d(MainMenuActivity.LOG_TAG,
+				"Timer/ onSaveInstanceState has been called");
+
+		savedInstanceState.putSerializable(EXERCISE_STACK,
+				completedExerciseStack);
+		savedInstanceState.putSerializable(EXERCISE_LIST, exerciseList);
+
+
+	}
+
+	public void onPause() {
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
+		super.onPause();
+		pauseTimer();
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -123,9 +155,9 @@ public class TimerActivity extends ListActivity {
 		} else {
 
 			try {
-				completedExerciseStack = (Stack<Exercise>) savedInstanceState
+				 exerciseList= (ArrayList<Exercise>) savedInstanceState
 						.getSerializable(EXERCISE_STACK);
-				exerciseList = (ArrayList<Exercise>) savedInstanceState
+				 completedExerciseStack= (Stack<Exercise>) savedInstanceState
 						.getSerializable(EXERCISE_LIST);
 			} catch (Exception e) {
 
@@ -148,6 +180,7 @@ public class TimerActivity extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position,
 					long arg3) {
+				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				boolean wasPaused = countDownTimer.isPaused();
 				
 				countDownTimer.stopTimer();
@@ -174,7 +207,8 @@ public class TimerActivity extends ListActivity {
 		resetExerciseButton.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
+				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				restartExercise();
 			}
 
@@ -185,7 +219,8 @@ public class TimerActivity extends ListActivity {
 		resetFromStartButton.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
+				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				restartFromTop();
 			}
 
@@ -195,8 +230,8 @@ public class TimerActivity extends ListActivity {
 		pauseAndStartButton.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
-								
+			public void onClick(View v) {
+				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				if (countDownTimer.isPaused() && countDownTimer.isRunning()) {
 					pauseAndStartButton.setText("Pause");
 					unPauseTimer();
@@ -219,45 +254,6 @@ public class TimerActivity extends ListActivity {
 		startCountDown(currentExercise);
 	}
 
-	public void onStart() {
-		super.onStart();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStart has been called");
-	}
-
-	public void onResume() {
-		super.onResume();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
-		unPauseTimer();
-	}
-
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-
-		Log.d(MainMenuActivity.LOG_TAG,
-				"Timer/ onSaveInstanceState has been called");
-
-		savedInstanceState.putSerializable(EXERCISE_STACK,
-				completedExerciseStack);
-		savedInstanceState.putSerializable(EXERCISE_LIST, exerciseList);
-
-		super.onSaveInstanceState(savedInstanceState);
-	}
-
-	public void onPause() {
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
-		super.onPause();
-		pauseTimer();
-	}
-
-	public void onStop() {
-		super.onStop();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStop has been called");
-	}
-
-	public void onDestroy() {
-		super.onDestroy();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onDestroy has been called");
-	}
-
 	public void startCountDown(final Exercise ex) {
 
 		// set the display to the name of the current exercise
@@ -268,17 +264,6 @@ public class TimerActivity extends ListActivity {
 		} else {
 			return;
 		}
-	}
-
-	public void restartExercise() {
-		boolean wasPaused = countDownTimer.isPaused();
-		countDownTimer.stopTimer();
-		startCountDown(currentExercise);
-		
-		if (wasPaused){
-			prepAndPauseTimer();
-		}
-
 	}
 
 	public void pauseTimer() {
@@ -316,6 +301,17 @@ public class TimerActivity extends ListActivity {
 		}
 	}
 
+	public void restartExercise() {
+		boolean wasPaused = countDownTimer.isPaused();
+		countDownTimer.stopTimer();
+		startCountDown(currentExercise);
+		
+		if (wasPaused){
+			prepAndPauseTimer();
+		}
+
+	}
+	
 	public void timerFinish() {
 		if (!(exerciseList.isEmpty())) {
 			completedExerciseStack.push(currentExercise);
