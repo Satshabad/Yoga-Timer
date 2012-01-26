@@ -20,17 +20,6 @@ public class Exercise implements Serializable {
      */
     private long time;
     
-    /**
-     * If the exercise has been paused then this is the time left, if not then it is the equal to the run time
-     */
-    private long pauseTime;
-    
-    /**
-     * If the exercises has been paused or not
-     * 
-     */
-    private boolean paused;
-
     
     /**
      * Creates an exercise
@@ -41,8 +30,6 @@ public class Exercise implements Serializable {
     public Exercise(String mName, long mTime) {
         name = mName;
         time = mTime;
-        paused = true;
-        pauseTime = mTime;
     }
 
     /**
@@ -61,41 +48,6 @@ public class Exercise implements Serializable {
      */
     public long getTime() {
         return time;
-    }
-
-    /**
-     * Check whether the exercise is paused or not
-     * 
-     * @return
-     */
-    public boolean isPaused() {
-        return paused;
-    }
-
-    /**
-     * Pauses the current exercise. If already paused, does nothing
-     */
-    public void setStatePaused(long t) {
-        paused = true;
-        pauseTime = t;
-    }
-
-    /**
-     * Unpauses the current exercise. If already unpaused, does nothing
-     */
-    public void setStateUnPaused() {
-        pauseTime = time;
-        paused = false;
-    }
-
-    /**
-     * Gets the time left
-     * 
-     * @return
-     */
-    public long getPauseTime() {
-
-        return pauseTime;
     }
 
     /**

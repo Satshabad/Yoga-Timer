@@ -18,321 +18,355 @@ import android.widget.TextView;
 
 /**
  * @author satshabad
- *
+ * 
  */
 public class TimerActivity extends ListActivity {
 
-    /**
-     * A list to hold the exercises to be counted down
-     */
-    private ArrayList<Exercise> exerciseList;
+	/**
+	 * A list to hold the exercises to be counted down
+	 */
+	private ArrayList<Exercise> exerciseList;
 
-    /**
-     * The time displayed to the user in milliseconds
-     */
-    private long timeOnClock;
+	/**
+	 * The time displayed to the user in milliseconds
+	 */
+	private long timeOnClock;
 
-    /**
-     * the exercise currently being counted down
-     */
-    private Exercise currentExercise;
+	/**
+	 * the exercise currently being counted down
+	 */
+	private Exercise currentExercise;
 
-    /**
-     * The actual timer object
-     */
-    private MyCountDownTimer countDownTimer;
+	/**
+	 * The actual timer object
+	 */
+	private MyCountDownTimerWrapper countDownTimer;
 
-    /**
-     * A stack containing the exercises that have already been counted down
-     */
-    private Stack<Exercise> completedExerciseStack;
+	/**
+	 * A stack containing the exercises that have already been counted down
+	 */
+	private Stack<Exercise> completedExerciseStack;
 
-    /**
-     * A display showing the time left in the current exercise
-     */
-    private TextView timeDisplay;
+	/**
+	 * A display showing the time left in the current exercise
+	 */
+	private TextView timeDisplay;
 
-    /**
-     * A display containing the name of the current exercise
-     */
-    private TextView currentExerciseName;
+	/**
+	 * A display containing the name of the current exercise
+	 */
+	private TextView currentExerciseName;
 
-    /**
-     * A list display containing the {@link #exerciseList} objects left to be
-     * counted down
-     */
-    private ListView theListView;
+	/**
+	 * A list display containing the {@link #exerciseList} objects left to be
+	 * counted down
+	 */
+	private ListView theListView;
 
-    /**
-     * A custom adapter to allow the exercises be displayed with the time
-     */
-    private ExerciseAdapter adapter;
+	/**
+	 * A custom adapter to allow the exercises be displayed with the time
+	 */
+	private ExerciseAdapter adapter;
 
-    /**
-     * A button allowing user to reset the entire set of exercises
-     */
-    private Button resetFromStart;
+	/**
+	 * A button allowing user to reset the entire set of exercises
+	 */
+	private Button resetFromStartButton;
 
-    /**
-     * A button allowing the user to pause the current exercise
-     */
-    private Button pause;
+	/**
+	 * A button allowing the user to pause the current exercise
+	 */
+	private Button pauseAndStartButton;
 
-    /**
-     * A button allowing user to reset the current exercise
-     */
-    private Button resetExercise;
+	/**
+	 * A button allowing user to reset the current exercise
+	 */
+	private Button resetExerciseButton;
 
-    
-    /**
-     * Key to grab the exercise stack from the preferences
-     */
-    private final String EXERCISE_STACK = "EXERCISE_STACK";
-    
-    /**
-     * Key to grab the exercise list from the preferences
-     */
-    private final String EXERCISE_LIST = "EXERCISE_LIST";
+	/**
+	 * Key to grab the exercise stack from the preferences
+	 */
+	private final String EXERCISE_STACK = "EXERCISE_STACK";
 
-    @SuppressWarnings("unchecked")
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onCreate has been called");
-        setContentView(R.layout.timer_layout);
-        
-        // create buttons and other views
-        resetExercise = (Button) findViewById(R.id.reset_exercise);
-        resetFromStart = (Button) findViewById(R.id.reset_set_button);
-        pause = (Button) findViewById(R.id.pause_button);
-        currentExerciseName = (TextView) findViewById(R.id.exercise_name);
-        timeDisplay = (TextView) findViewById(R.id.time_display);
+	/**
+	 * Key to grab the exercise list from the preferences
+	 */
+	private final String EXERCISE_LIST = "EXERCISE_LIST";
 
+	@SuppressWarnings("unchecked")
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onCreate has been called");
+		setContentView(R.layout.timer_layout);
 
-                
-        if (savedInstanceState == null) {
-            // get the list of exercises
-            Intent thisIntent = getIntent();
-            Bundle listBundle = thisIntent.getExtras();
-            try {
-                exerciseList = (ArrayList<Exercise>) listBundle
-                        .getSerializable("thelist");
-            } catch (Exception e) {
-                Log.e(MainMenuActivity.LOG_TAG,
-                        "Some thing went wrong when trying to get list");
-            }
-            completedExerciseStack = new Stack<Exercise>();
-        }else{
-            
-            try {
-                completedExerciseStack = (Stack<Exercise>) savedInstanceState.getSerializable(EXERCISE_STACK);
-                exerciseList = (ArrayList<Exercise>) savedInstanceState.getSerializable(EXERCISE_LIST);
-            } catch (Exception e) {
-                
-                Log.e(MainMenuActivity.LOG_TAG, "problem getting old list or stack", e);
+		// create buttons and other views
+		resetExerciseButton = (Button) findViewById(R.id.reset_exercise);
+		resetFromStartButton = (Button) findViewById(R.id.reset_set_button);
+		pauseAndStartButton = (Button) findViewById(R.id.pause_button);
+		currentExerciseName = (TextView) findViewById(R.id.exercise_name);
+		timeDisplay = (TextView) findViewById(R.id.time_display);
 
-            }
-            
-            
-        }
-        
-        Log.e(MainMenuActivity.LOG_TAG,
-                "here2");
-        // display the list of exercises
-        adapter = new ExerciseAdapter(this, exerciseList);
-        setListAdapter(adapter);
-         
-        
-        theListView = getListView();
-        // when an exercise in the list is clicked, start from that exercise
-        theListView.setOnItemClickListener(new OnItemClickListener() {
+		countDownTimer = new MyCountDownTimerWrapper(this);
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View v, int position,
-                    long arg3) {
-                countDownTimer.cancel();
-                int p = position;
-                completedExerciseStack.push(currentExercise);
-                while (p != 0) {
-                    completedExerciseStack.push(exerciseList.remove(0));
-                    adapter.notifyDataSetChanged();
-                    p--;
-                }
-                currentExercise = exerciseList.remove(0);
-                adapter.notifyDataSetChanged();
-                restartExercise();
-            }
+		if (savedInstanceState == null) {
+			// get the list of exercises
+			Intent thisIntent = getIntent();
+			Bundle listBundle = thisIntent.getExtras();
+			try {
+				exerciseList = (ArrayList<Exercise>) listBundle
+						.getSerializable("thelist");
+			} catch (Exception e) {
+				Log.e(MainMenuActivity.LOG_TAG,
+						"Some thing went wrong when trying to get list");
+			}
+			completedExerciseStack = new Stack<Exercise>();
+		} else {
 
-        });
-        
-        // when this button is clicked, restart from the beginning of current exercise
-        resetExercise.setOnClickListener(new Button.OnClickListener() {
+			try {
+				completedExerciseStack = (Stack<Exercise>) savedInstanceState
+						.getSerializable(EXERCISE_STACK);
+				exerciseList = (ArrayList<Exercise>) savedInstanceState
+						.getSerializable(EXERCISE_LIST);
+			} catch (Exception e) {
 
-            @Override
-            public void onClick(View arg0) {
-                restartExercise();
-            }
+				Log.e(MainMenuActivity.LOG_TAG,
+						"problem getting old list or stack", e);
 
-        });
-        
-        // when this button is clicked, restart from the beginning of all the exercises
-        resetFromStart.setOnClickListener(new Button.OnClickListener() {
+			}
 
-            @Override
-            public void onClick(View arg0) {
-                restartFromTop();
-            }
+		}
 
-        });
-        
-        // when this button is clicked call pause to pause
-        pause.setOnClickListener(new Button.OnClickListener() {
+		Log.e(MainMenuActivity.LOG_TAG, "here2");
+		// display the list of exercises
+		adapter = new ExerciseAdapter(this, exerciseList);
+		setListAdapter(adapter);
 
-            @Override
-            public void onClick(View arg0) {
-                if(currentExercise.isPaused()){
-                    unPauseTimer();
-                }else{
-                    pauseTimer();
-                }
-            }
+		theListView = getListView();
+		// when an exercise in the list is clicked, start from that exercise
+		theListView.setOnItemClickListener(new OnItemClickListener() {
 
-        });
-        
-        //grab the first exercises
-        currentExercise = exerciseList.remove(0);
-        adapter.notifyDataSetChanged();
-        
-        // start with the first exercise
-        //startCount(currentExercise);
-    }
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position,
+					long arg3) {
+				boolean wasPaused = countDownTimer.isPaused();
+				
+				countDownTimer.stopTimer();
+				int p = position;
+				completedExerciseStack.push(currentExercise);
+				while (p != 0) {
+					completedExerciseStack.push(exerciseList.remove(0));
+					p--;
+				}
+				adapter.notifyDataSetChanged();
+				currentExercise = exerciseList.remove(0);
+				adapter.notifyDataSetChanged();
+				startCountDown(currentExercise);
+				
+				if (wasPaused){
+					prepAndPauseTimer();
+				}
+			}
 
-    public void onStart(){
-        super.onStart();
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStart has been called");
-    }
-    
-    public void onResume(){
-        super.onResume();
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
-        unPauseTimer();
-    }
-    
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onSaveInstanceState has been called");
+		});
 
-        savedInstanceState.putSerializable(EXERCISE_STACK, completedExerciseStack);
-        savedInstanceState.putSerializable(EXERCISE_LIST, exerciseList);
-        
-        super.onSaveInstanceState(savedInstanceState);
-      }
-    
-    public void onPause(){
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
-        super.onPause();
-        pauseTimer();
-    }
-      
-    public void onStop(){
-            super.onStop();
-            Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStop has been called");
-    }
-    
-    public void onDestroy(){
-        super.onDestroy();
-        Log.d(MainMenuActivity.LOG_TAG, "Timer/ onDestroy has been called");
-    }
-        
-    public void startCount(final Exercise ex) {
-        
-        // set the display to the name of the current exercise
-        currentExerciseName.setText(ex.getName());
-        
-        long timeForCountDown;
-        if (currentExercise.isPaused()) {
-            timeForCountDown = ex.getPauseTime();
-        } else
-            timeForCountDown = ex.getTime();
+		// when this button is clicked, restart from the beginning of current
+		// exercise
+		resetExerciseButton.setOnClickListener(new Button.OnClickListener() {
 
-        currentExercise.setStateUnPaused();
-        countDownTimer = new MyCountDownTimer(timeForCountDown, 1000, this);
-        countDownTimer.start();
+			@Override
+			public void onClick(View arg0) {
+				restartExercise();
+			}
 
-    }
+		});
 
-    public void restartExercise() {
-        currentExercise.setStateUnPaused();
-        countDownTimer.cancel();
-        startCount(currentExercise);
-    }
+		// when this button is clicked, restart from the beginning of all the
+		// exercises
+		resetFromStartButton.setOnClickListener(new Button.OnClickListener() {
 
-    public void pauseTimer() {
-            currentExercise.setStatePaused(timeOnClock);
-            countDownTimer.cancel();
-    }
-    
-    public void unPauseTimer() {
-            startCount(currentExercise);
-    }
+			@Override
+			public void onClick(View arg0) {
+				restartFromTop();
+			}
 
-    public void restartFromTop() {
-        countDownTimer.cancel();
+		});
 
-        if (completedExerciseStack.isEmpty()) {
-            restartExercise();
-        } else {
-            exerciseList.add(0, currentExercise);
-            while (!completedExerciseStack.isEmpty()) {
-                exerciseList.add(0, completedExerciseStack.pop());
-            }
+		// when this button is clicked call pause to pause
+		pauseAndStartButton.setOnClickListener(new Button.OnClickListener() {
 
-            adapter = new ExerciseAdapter(this, exerciseList);
-            setListAdapter(adapter);
-            currentExercise = exerciseList.remove(0);
-            adapter.notifyDataSetChanged();
-            startCount(currentExercise);
-        }
-    }
+			@Override
+			public void onClick(View arg0) {
+								
+				if (countDownTimer.isPaused() && countDownTimer.isRunning()) {
+					pauseAndStartButton.setText("Pause");
+					unPauseTimer();
+				} else if (!countDownTimer.isPaused()
+						&& countDownTimer.isRunning()) {
+					pauseAndStartButton.setText("Start");
+					pauseTimer();
+				} else if (!countDownTimer.isRunning()) {
+					return;
+				}
+			}
 
+		});
+
+		// grab the first exercise
+		currentExercise = exerciseList.remove(0);
+		adapter.notifyDataSetChanged();
+
+		// start with the first exercise
+		startCountDown(currentExercise);
+	}
+
+	public void onStart() {
+		super.onStart();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStart has been called");
+	}
+
+	public void onResume() {
+		super.onResume();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
+		unPauseTimer();
+	}
+
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+
+		Log.d(MainMenuActivity.LOG_TAG,
+				"Timer/ onSaveInstanceState has been called");
+
+		savedInstanceState.putSerializable(EXERCISE_STACK,
+				completedExerciseStack);
+		savedInstanceState.putSerializable(EXERCISE_LIST, exerciseList);
+
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	public void onPause() {
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
+		super.onPause();
+		pauseTimer();
+	}
+
+	public void onStop() {
+		super.onStop();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStop has been called");
+	}
+
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onDestroy has been called");
+	}
+
+	public void startCountDown(final Exercise ex) {
+
+		// set the display to the name of the current exercise
+		currentExerciseName.setText(ex.getName());
+
+		if (!countDownTimer.isRunning()) {
+			countDownTimer.startTimer(ex.getTime());
+		} else {
+			return;
+		}
+	}
+
+	public void restartExercise() {
+		boolean wasPaused = countDownTimer.isPaused();
+		countDownTimer.stopTimer();
+		startCountDown(currentExercise);
+		
+		if (wasPaused){
+			prepAndPauseTimer();
+		}
+
+	}
+
+	public void pauseTimer() {
+		countDownTimer.pauseTimer();
+	}
+
+	public void unPauseTimer() {
+
+		countDownTimer.unPauseTimer();
+	}
+
+	public void restartFromTop() {
+		
+		boolean wasPaused = countDownTimer.isPaused();
+		
+		countDownTimer.stopTimer();
+
+		if (completedExerciseStack.isEmpty()) {
+			restartExercise();
+		} else {
+			exerciseList.add(0, currentExercise);
+			while (!completedExerciseStack.isEmpty()) {
+				exerciseList.add(0, completedExerciseStack.pop());
+			}
+
+			adapter = new ExerciseAdapter(this, exerciseList);
+			setListAdapter(adapter);
+			currentExercise = exerciseList.remove(0);
+			adapter.notifyDataSetChanged();
+			startCountDown(currentExercise);
+		}
+		
+		if (wasPaused){
+			prepAndPauseTimer();
+		}
+	}
 
 	public void timerFinish() {
 		if (!(exerciseList.isEmpty())) {
-            completedExerciseStack.push(currentExercise);
-            currentExercise = exerciseList.get(0);
-            timeOnClock = currentExercise.getTime();
-        }
+			completedExerciseStack.push(currentExercise);
+			timeOnClock = exerciseList.get(0).getTime();
+		}
 
-        timeDisplay.setText("00:00");
-        resetExercise.setClickable(false);
-        resetFromStart.setClickable(false);
-        MediaPlayer player = MediaPlayer.create(TimerActivity.this, R.raw.jap_bell);
-        player.start();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-            public void onCompletion(MediaPlayer arg0) {
-                arg0.release();
-                if (!(exerciseList.isEmpty())) {
-                    exerciseList.remove(0);
-                    adapter.notifyDataSetChanged();
-                    resetExercise.setClickable(true);
-                    resetFromStart.setClickable(true);
-                    if (!currentExercise.isPaused()) {
-
-                        startCount(currentExercise);
-                    } else
-                        timeDisplay.setText(Exercise
-                                .timeToString(currentExercise.getTime()));
-                    currentExerciseName.setText(currentExercise.getName());
-                } else
-                    currentExerciseName.setText("All Finished");
-            }
-        });
+		timeDisplay.setText("00:00");
+		// don't let user click these buttons while media player plays sound
+		resetExerciseButton.setClickable(false);
+		resetFromStartButton.setClickable(false);
 		
+		MediaPlayer player = MediaPlayer.create(TimerActivity.this,
+				R.raw.jap_bell);
+		player.start();
+		player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+			public void onCompletion(MediaPlayer arg0) {
+				arg0.release();
+				if (!(exerciseList.isEmpty())) {
+					currentExercise = exerciseList.remove(0);
+					adapter.notifyDataSetChanged();
+					timeDisplay.setText(Exercise.timeToString(currentExercise.getTime()));
+					startCountDown(currentExercise);
+					countDownTimer.pauseTimer();
+					
+					pauseAndStartButton.setText("Start");
+					
+					
+					
+				} else{
+					currentExerciseName.setText("All Finished");
+					pauseAndStartButton.setText("Pause");
+				}
+				
+				resetExerciseButton.setClickable(true);
+				resetFromStartButton.setClickable(true);	
+				
+			}
+		});
+
 	}
 
 	public void timerTick(long millisUntilFinished) {
 		timeDisplay.setText(((Exercise.timeToString(millisUntilFinished))));
-        timeOnClock = millisUntilFinished;
-		
+		timeOnClock = millisUntilFinished;
+
 	}
+
+	private void prepAndPauseTimer(){
+		timeDisplay.setText(Exercise.timeToString(currentExercise.getTime()));
+		countDownTimer.pauseTimer();
+	}
+
 }

@@ -11,24 +11,32 @@ import android.widget.TextView;
  * 
  */
 public class MyCountDownTimer extends CountDownTimer {
-	private TimerActivity ActivityWaitingForResponse;
+	private MyCountDownTimerWrapper ActivityWaitingForResponse;
+	private long timeLeft;
 	
 	
 	public MyCountDownTimer(long millisInFuture, long countDownInterval,
-			TimerActivity mActivityWaitingForResponse) {
+			MyCountDownTimerWrapper mActivityWaitingForResponse) {
 		super(millisInFuture, countDownInterval);
 		ActivityWaitingForResponse = mActivityWaitingForResponse;
+		timeLeft = millisInFuture;
 	}
 
 	@Override
 	public void onFinish() {
 		ActivityWaitingForResponse.timerFinish();
+		
 
 	}
 
 	@Override
 	public void onTick(long millisUntilFinished) {
+		timeLeft = millisUntilFinished;
 		ActivityWaitingForResponse.timerTick(millisUntilFinished);
+	}
+
+	public long getTimeLeft() {
+		return timeLeft;
 	}
 
 }
