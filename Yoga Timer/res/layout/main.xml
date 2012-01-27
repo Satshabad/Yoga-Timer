@@ -15,16 +15,14 @@
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent" 
     android:text="New Set"
-    android:padding="30dp"
-    android:layout_margin="5dp"
+	style="@style/app_button"
     />
     <Button  
     android:id="@+id/the_saved_button"
    	android:layout_width="fill_parent" 
     android:layout_height="fill_parent" 
     android:text="Saved Set"
-    android:padding="30dp"
-    android:layout_margin="5dp"
+    style="@style/app_button"
     />
     </LinearLayout>
 </RelativeLayout>

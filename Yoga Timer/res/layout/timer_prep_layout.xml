@@ -17,7 +17,8 @@
 			android:layout_alignParentRight="true"
 			android:layout_height="wrap_content"
 			android:textSize="30dp"
-			android:onClick="startTimer">
+			android:onClick="startTimer"
+			android:background="@drawable/white_bg">
 		</Button>
 		
 		<Button 
@@ -26,7 +27,8 @@
 			android:layout_height="wrap_content" 
 			android:id="@+id/save_button"
 			android:layout_alignParentLeft="true"
-			android:textSize="30dp">
+			android:textSize="30dp"
+			android:background="@drawable/white_bg">
 		</Button>
 	</RelativeLayout >
 	
@@ -49,21 +51,23 @@
 		android:handle="@+id/handle" 
 		android:content="@+id/content"
 		android:layout_alignParentBottom="true"
-		android:layout_alignParentLeft="true">
+		android:layout_alignParentLeft="true"
+		>
 		
 		<Button 
 			android:layout_width="wrap_content" 
 			android:text="Add Timer"
 			android:layout_height="wrap_content" 
 			android:id="@+id/handle"
-			android:textSize="30dp">
+			android:textSize="30dp"
+			android:background="@drawable/white_bg">
 		</Button>
 		<LinearLayout 
 			android:id="@+id/content"
 			android:orientation="vertical"
 			android:layout_width="fill_parent" 
 			android:layout_height="fill_parent" 
-			android:background="#9C74BD">
+			android:background="@drawable/black_bg">
 			 <net.satshabad.android.timersetter.TimerSetter android:layout_height="fill_parent" android:layout_width="fill_parent" android:id= "@+id/timer"/>
 		</LinearLayout>
 	</SlidingDrawer>

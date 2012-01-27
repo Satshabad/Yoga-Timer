@@ -43,6 +43,7 @@
 			android:id="@+id/pause_button"
 			android:gravity="right"
 			android:textSize="30dp"
+			android:background="@drawable/white_bg"
 		/>
 		</LinearLayout>
 	<ListView 
@@ -78,6 +79,7 @@
 				android:layout_height="wrap_content"
 				android:textSize="25dp"
 				android:layout_weight="1"
+				android:background="@drawable/white_bg"
 				></Button>
 			
 			<Button 
@@ -87,6 +89,7 @@
 				android:id="@+id/reset_exercise"
 				android:layout_weight="1"
 				android:textSize="25dp"
+				android:background="@drawable/white_bg"
 				>
 			</Button>
 		</LinearLayout>
