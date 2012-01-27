@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -130,7 +131,13 @@ public class TimerActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onCreate has been called");
 		setContentView(R.layout.timer_layout);
-
+		
+		// let the whole application know that the timer is now running
+		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
+	    editor.commit();
+		
 		// create buttons and other views
 		resetExerciseButton = (Button) findViewById(R.id.reset_exercise);
 		resetFromStartButton = (Button) findViewById(R.id.reset_set_button);
@@ -344,6 +351,11 @@ public class TimerActivity extends ListActivity {
 				} else{
 					currentExerciseName.setText("All Finished");
 					pauseAndStartButton.setText("Pause");
+					// let the whole application know that the timer is now NOT running
+				    SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
+				    SharedPreferences.Editor editor = settings.edit();
+				    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+				    editor.commit();
 				}
 				
 				resetExerciseButton.setClickable(true);

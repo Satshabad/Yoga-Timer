@@ -2,6 +2,7 @@ package net.satshabad.android.yogatimer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -15,11 +16,17 @@ public class MainMenuActivity extends Activity {
      * Tag for the LogCat logs for this app
      */
     public static final String LOG_TAG = "Yoga Timer";
+    public static final String PREFS_NAME = "PREFS_NAME";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+	    editor.commit();
         
         // this button leads to the timerPrep activity
         Button newSet = (Button)findViewById(R.id.the_new_button);

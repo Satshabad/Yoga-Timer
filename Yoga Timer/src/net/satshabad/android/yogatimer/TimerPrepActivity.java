@@ -6,17 +6,21 @@ import net.satshabad.android.timersetter.OnTimeSetListener;
 import net.satshabad.android.timersetter.TimerSetter;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
+
+
 public class TimerPrepActivity extends ListActivity {
 
+	public static final String IS_RUNNING_KEY = "IS_RUNNING_KEY";
+	
 	/**
 	 * A container for the timer setting mechanism
 	 */
@@ -54,56 +58,73 @@ public class TimerPrepActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.timer_prep_layout);
+		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
+	    boolean isRunning = settings.getBoolean(IS_RUNNING_KEY, false);
+		
+	    if(isRunning){
+	    	setContentView(R.layout.running_timer_layout);
+	    	
+	    	
+	    }else{
+			setContentView(R.layout.timer_prep_layout);
 
-		startButton = (Button) findViewById(R.id.start_button);
-		saveButton = (Button) findViewById(R.id.save_button);
+			startButton = (Button) findViewById(R.id.start_button);
+			saveButton = (Button) findViewById(R.id.save_button);
 
-		// using the custom timer setter view
-		theTimerSetter = (TimerSetter) findViewById(R.id.timer);
-		exerciseList = new ArrayList<Exercise>();
+			// using the custom timer setter view
+			theTimerSetter = (TimerSetter) findViewById(R.id.timer);
+			exerciseList = new ArrayList<Exercise>();
 
-		adapter = new ExerciseAdapter(this, exerciseList);
-		setListAdapter(adapter);
-		drawer = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+			adapter = new ExerciseAdapter(this, exerciseList);
+			setListAdapter(adapter);
+			drawer = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 
-		theTimerSetter.setNextTimerName("Exercise " + (exerciseIndex + 1));
+			theTimerSetter.setNextTimerName("Exercise " + (exerciseIndex + 1));
 
-		// when the user sets the timer, call the addExerciseToList method with
-		// the time and name
-		theTimerSetter.setOnTimeSetListener(new OnTimeSetListener() {
+			// when the user sets the timer, call the addExerciseToList method with
+			// the time and name
+			theTimerSetter.setOnTimeSetListener(new OnTimeSetListener() {
 
-			@Override
-			public void onTimeSet(String exerciseName, long time) {
-				addExerciseToList(exerciseName, time);
-			}
-		});
+				@Override
+				public void onTimeSet(String exerciseName, long time) {
+					addExerciseToList(exerciseName, time);
+				}
+			});
 
-		// this eliminates a bug that sometimes allows the user to click "under"
-		// the timer setting drawer
-		drawer.setOnDrawerOpenListener(new OnDrawerOpenListener() {
+			// this eliminates a bug that sometimes allows the user to click "under"
+			// the timer setting drawer
+			drawer.setOnDrawerOpenListener(new OnDrawerOpenListener() {
 
-			@Override
-			public void onDrawerOpened() {
-				startButton.setEnabled(false);
-				saveButton.setEnabled(false);
-			}
+				@Override
+				public void onDrawerOpened() {
+					getListView().setVisibility(View.INVISIBLE);
+					startButton.setEnabled(false);
+					saveButton.setEnabled(false);
+				}
 
-		});
+			});
 
-		// same as above
-		drawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
+			// same as above
+			drawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
 
-			@Override
-			public void onDrawerClosed() {
-				startButton.setEnabled(true);
-				saveButton.setEnabled(true);
+				@Override
+				public void onDrawerClosed() {
+					getListView().setVisibility(View.VISIBLE);
+					startButton.setEnabled(true);
+					saveButton.setEnabled(true);
 
-			}
-		});
+				}
+			});
 
+	    }
 	}
 
+	public void onResume(){
+		super.onResume();
+	
+		
+	}
+	
 	protected void addExerciseToList(String exerciseName, long time) {
 		exerciseList.add(exerciseIndex, new Exercise(exerciseName, time));
 		exerciseIndex++;
