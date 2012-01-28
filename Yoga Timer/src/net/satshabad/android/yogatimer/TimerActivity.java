@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -94,6 +96,8 @@ public class TimerActivity extends ListActivity {
 	 */
 	private final String EXERCISE_LIST = "EXERCISE_LIST";
 
+	private PowerManager.WakeLock wakelock;
+
 	
 	
 	public void onStart() {
@@ -122,6 +126,7 @@ public class TimerActivity extends ListActivity {
 	public void onPause() {
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
 		super.onPause();
+		wakelock.release();
 		pauseTimer();
 		
 	}
@@ -138,6 +143,11 @@ public class TimerActivity extends ListActivity {
 	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
 	    editor.commit();
 		
+	    //Prevent the screen from sleeping
+	    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	    wakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+	    wakelock.acquire();
+	    
 		// create buttons and other views
 		resetExerciseButton = (Button) findViewById(R.id.reset_exercise);
 		resetFromStartButton = (Button) findViewById(R.id.reset_set_button);
@@ -356,6 +366,7 @@ public class TimerActivity extends ListActivity {
 				    SharedPreferences.Editor editor = settings.edit();
 				    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
 				    editor.commit();
+				    wakelock.release();
 				}
 				
 				resetExerciseButton.setClickable(true);
