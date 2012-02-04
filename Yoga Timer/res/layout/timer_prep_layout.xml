@@ -17,9 +17,8 @@
 			android:text="Start"
 			android:layout_alignParentRight="true"
 			android:layout_height="wrap_content"
-
 			android:onClick="startTimer"
-
+			android:textSize="60dp"
 			style="@style/timer_button"
 			>
 			
