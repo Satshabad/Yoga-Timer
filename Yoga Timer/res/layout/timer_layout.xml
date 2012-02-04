@@ -4,13 +4,20 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:layout_alignParentTop="true"
-		android:id="@+id/timer_container">
+
+    
+    <ListView >
+        
+        
+        
+    </ListView>
+    
+	<LinearLayout
+	    android:id="@+id/timer_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center"
+	    android:orientation="vertical" >
 		
 		<TextView 
 			android:text="Bow Pose"
@@ -18,9 +25,8 @@
 			android:layout_height="match_parent"
 			android:id="@+id/exercise_name"
 			android:gravity="center"
-			android:textSize="30dp"
-			android:layout_marginRight="50dp"
-			android:textStyle="bold"
+			style="@style/timer_text"
+			android:textSize="50dp"
 			android:layout_weight="1"
 		/>
 		<TextView 
@@ -36,34 +42,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:text="Pause"
+			android:textSize="80dp"
 			android:id="@+id/pause_button"
 			style="@style/timer_button"
 			android:layout_weight="1"
 		/>
 
-	</LinearLayout>
-		<LinearLayout 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:layout_below="@id/timer_container"
-			android:id="@+id/name_pause_container"
-			android:layout_centerHorizontal="true">
-		
-		</LinearLayout>
-	<ListView 
-		android:layout_width="fill_parent" 
-		android:id="@android:id/list"
-		android:layout_height="wrap_content" 
-		android:layout_below="@id/name_pause_container"
-		android:layout_above="@+id/reset_container"
-	/>
-	<RelativeLayout 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:id="@id/reset_container"
-		android:layout_alignParentBottom="true">
-		
 		<TextView 
 			android:text="Restart From:"
 			android:textStyle="bold"
@@ -72,7 +56,9 @@
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content" 
 			android:layout_centerHorizontal="true"/>
-		<LinearLayout 
+		
+		<LinearLayout
+		    android:layout_weight="1"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
 			android:id="@+id/button_container"
@@ -83,10 +69,9 @@
 				android:id="@+id/reset_set_button" 
 				android:text="Beginning"
 				android:layout_height="wrap_content"
-				android:textSize="25dp"
 				android:layout_weight="1"
-				android:background="@drawable/white_bg"
-				android:textStyle="bold"
+
+				style="@style/timer_button"
 				></Button>
 			
 			<Button 
@@ -95,13 +80,12 @@
 				android:layout_height="wrap_content" 
 				android:id="@+id/reset_exercise"
 				android:layout_weight="1"
-				android:textSize="25dp"
-				android:textStyle="bold"
-				android:background="@drawable/white_bg"
+				style="@style/timer_button"
 				>
 			</Button>
 		</LinearLayout>
-	</RelativeLayout>
+	</LinearLayout>
+
 
 
 </RelativeLayout >
