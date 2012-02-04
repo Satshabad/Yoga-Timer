@@ -13,6 +13,8 @@ public class MyCountDownTimerWrapper {
 	public MyCountDownTimerWrapper(TimerActivity timerActivity) {
 		this.timerActivity = timerActivity;
 		countDownTimer = null;
+		isRunning= false;
+		isPaused = false;
 		
 		
 	}
@@ -40,6 +42,7 @@ public class MyCountDownTimerWrapper {
 			return;
 		}
 		countDownTimer = new MyCountDownTimer(time, ONE_SECOND, this);
+		countDownTimer.start();
 		isRunning = true;
 		isPaused = false;
 		pauseTime = time;
@@ -59,6 +62,7 @@ public class MyCountDownTimerWrapper {
 			return;
 		}
 		countDownTimer = new MyCountDownTimer(pauseTime, ONE_SECOND, this);
+		countDownTimer.start();
 		isPaused = false;
 	}
 
