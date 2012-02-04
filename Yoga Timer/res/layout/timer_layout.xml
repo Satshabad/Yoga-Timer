@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout 
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	android:orientation="vertical"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<LinearLayout 
@@ -11,13 +11,35 @@
 		android:gravity="center"
 		android:layout_alignParentTop="true"
 		android:id="@+id/timer_container">
-				<TextView 
-						android:text=""
-						android:id="@+id/time_display"
-						android:textSize="80dp"
-						android:layout_width="wrap_content" 
-						android:layout_height="wrap_content"
-					/>
+		
+		<TextView 
+			android:text="Bow Pose"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/exercise_name"
+			android:gravity="center"
+			android:textSize="30dp"
+			android:layout_marginRight="50dp"
+			android:textStyle="bold"
+			android:layout_weight="1"
+		/>
+		<TextView 
+			android:text=""
+			android:id="@+id/time_display"
+			android:textSize="80dp"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+		/>
+
+		<Button 
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:text="Pause"
+			android:id="@+id/pause_button"
+			style="@style/timer_button"
+			android:layout_weight="1"
+		/>
 
 	</LinearLayout>
 		<LinearLayout 
@@ -27,24 +49,7 @@
 			android:layout_below="@id/timer_container"
 			android:id="@+id/name_pause_container"
 			android:layout_centerHorizontal="true">
-			<TextView 
-				android:text="Bow Pose"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/exercise_name"
-				android:gravity="left"
-				android:textSize="30dp"
-				android:layout_marginRight="50dp"
-				/>
-		<Button 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Pause"
-			android:id="@+id/pause_button"
-			android:gravity="right"
-			android:textSize="30dp"
-			android:background="@drawable/white_bg"
-		/>
+		
 		</LinearLayout>
 	<ListView 
 		android:layout_width="fill_parent" 
@@ -61,6 +66,7 @@
 		
 		<TextView 
 			android:text="Restart From:"
+			android:textStyle="bold"
 			android:id="@+id/reset_label"
 			android:textSize="25dp"
 			android:layout_height="wrap_content"
@@ -80,6 +86,7 @@
 				android:textSize="25dp"
 				android:layout_weight="1"
 				android:background="@drawable/white_bg"
+				android:textStyle="bold"
 				></Button>
 			
 			<Button 
@@ -89,6 +96,7 @@
 				android:id="@+id/reset_exercise"
 				android:layout_weight="1"
 				android:textSize="25dp"
+				android:textStyle="bold"
 				android:background="@drawable/white_bg"
 				>
 			</Button>

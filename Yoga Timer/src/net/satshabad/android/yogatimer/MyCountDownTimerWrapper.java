@@ -68,6 +68,7 @@ public class MyCountDownTimerWrapper {
 
 	public void timerFinish() {
 		timerActivity.timerFinish();
+		isRunning = false;
 		
 	}
 

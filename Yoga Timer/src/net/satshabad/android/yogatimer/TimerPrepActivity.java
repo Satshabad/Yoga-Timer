@@ -44,10 +44,6 @@ public class TimerPrepActivity extends ListActivity {
 	 */
 	private int exerciseIndex = 0;
 
-	/**
-	 * This button allows the user to save the created set for later use
-	 */
-	private Button saveButton;
 
 	/**
 	 * This button starts the current timer
@@ -69,7 +65,6 @@ public class TimerPrepActivity extends ListActivity {
 			setContentView(R.layout.timer_prep_layout);
 
 			startButton = (Button) findViewById(R.id.start_button);
-			saveButton = (Button) findViewById(R.id.save_button);
 
 			// using the custom timer setter view
 			theTimerSetter = (TimerSetter) findViewById(R.id.timer);
@@ -99,7 +94,6 @@ public class TimerPrepActivity extends ListActivity {
 				public void onDrawerOpened() {
 					getListView().setVisibility(View.INVISIBLE);
 					startButton.setEnabled(false);
-					saveButton.setEnabled(false);
 				}
 
 			});
@@ -111,7 +105,6 @@ public class TimerPrepActivity extends ListActivity {
 				public void onDrawerClosed() {
 					getListView().setVisibility(View.VISIBLE);
 					startButton.setEnabled(true);
-					saveButton.setEnabled(true);
 
 				}
 			});
