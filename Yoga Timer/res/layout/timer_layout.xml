@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout 
+<RelativeLayout
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
+	android:orientation="horizontal"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-
-    
-    <ListView >
-        
-        
-        
-    </ListView>
-    
+	<View android:id="@+id/divider"
+    		android:background="@drawable/black_white_gradient"
+    		android:layout_width="5dp"
+   	 		android:layout_height="match_parent"
+   	 		android:layout_centerHorizontal="true"
+   	 		
+    		/>
+
 	<LinearLayout
 	    android:id="@+id/timer_container"
-	    android:layout_width="match_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_toLeftOf="@+id/divider"
 	    android:gravity="center"
 	    android:orientation="vertical" >
 		
@@ -50,34 +52,35 @@
 
 		<TextView 
 			android:text="Restart From:"
+			android:gravity="center"
 			android:textStyle="bold"
 			android:id="@+id/reset_label"
 			android:textSize="25dp"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content" 
+			android:layout_height="match_parent"
+			android:layout_width="match_parent" 
 			android:layout_centerHorizontal="true"/>
 		
 		<LinearLayout
 		    android:layout_weight="1"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" 
 			android:id="@+id/button_container"
 			android:layout_below="@id/reset_label"
 			>
 			<Button 
-				android:layout_width="fill_parent"
+				android:layout_width="match_parent"
 				android:id="@+id/reset_set_button" 
 				android:text="Beginning"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:layout_weight="1"
 
 				style="@style/timer_button"
 				></Button>
 			
 			<Button 
-				android:layout_width="fill_parent" 
+				android:layout_width="match_parent" 
 				android:text="Exercise"
-				android:layout_height="wrap_content" 
+				android:layout_height="match_parent" 
 				android:id="@+id/reset_exercise"
 				android:layout_weight="1"
 				style="@style/timer_button"
@@ -85,7 +88,11 @@
 			</Button>
 		</LinearLayout>
 	</LinearLayout>
-
-
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/divider" />
 
 </RelativeLayout >
