@@ -27,6 +27,11 @@ public class MyCountDownTimerWrapper {
 		if(!isRunning){
 			return;
 		}
+		if(isPaused){
+			isRunning = false;
+			isPaused = false;
+			return;
+		}
 		countDownTimer.cancel();
 		isRunning = false;
 		isPaused = false;
