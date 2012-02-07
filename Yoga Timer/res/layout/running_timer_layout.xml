@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_width="match_parent"
+	android:layout_height="match_parent" >
 
-    <Button
-        style="@style/app_button"
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignRight="@+id/button2"
-        android:layout_centerVertical="true"
-        android:text="Cancel Set" />
-
-    <Button
-        style="@style/app_button"
-        android:id="@id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:text="Resume Set" />
-
-    <Button
-        style="@style/app_button"
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/button1"
-        android:layout_alignRight="@id/button1"
-        android:layout_below="@id/button1"
-        android:text="Save Set" />
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/button3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp" >
-
-    </ListView>
-
+    
+	<LinearLayout
+    	android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"
+	    android:orientation="vertical"
+	    android:layout_width="300dp"
+	    	android:layout_height="200dp" >
+    
+	    <Button
+	        android:id="@+id/resume_button"
+	        style="@style/timer_button"
+	        android:layout_above="@+id/cancel_button"
+			android:layout_weight="1"
+			android:layout_width="match_parent"
+	    	android:layout_height="match_parent"
+	        android:text="Resume" />
+	
+	    	<Button
+	        style="@style/timer_button"
+	        android:id="@+id/cancel_button"
+			android:layout_weight="1"
+	        android:layout_width="match_parent"
+	    	android:layout_height="match_parent"
+	        android:text="Cancel" />
+	</LinearLayout>
+	
+	<ListView 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/list"
+	    
+	    
+	    ></ListView>
 </RelativeLayout>
