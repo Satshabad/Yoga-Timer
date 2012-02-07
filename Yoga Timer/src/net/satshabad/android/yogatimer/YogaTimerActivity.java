@@ -42,7 +42,7 @@ public class YogaTimerActivity extends Activity {
      */
     private void launchTimer(){
        Log.d(LOG_TAG, "YogaTimerActivity/ActivityStart/TimerPrep");
-       startActivity(new Intent(this, TimerPrep.class));
+       startActivity(new Intent(this, TimerPrepActivity.class));
        
     }
 }
