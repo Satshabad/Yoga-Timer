@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author satshabad
@@ -147,6 +148,8 @@ public class TimerActivity extends ListActivity {
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
 		super.onPause();
 		pauseTimer();
+		// notify the user that the timer was paused
+		Toast.makeText(getApplicationContext(), "Timer Paused", Toast.LENGTH_LONG).show();
 		writePauseTime();
 		exerciseList.add(0, currentExercise);
 
@@ -173,6 +176,7 @@ public class TimerActivity extends ListActivity {
 			
 		
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public void onCreate(Bundle savedInstanceState) {
