@@ -20,6 +20,8 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 public class TimerPrepActivity extends ListActivity {
 
 	public static final String IS_RUNNING_KEY = "IS_RUNNING_KEY";
+
+	public static final String PAUSE_TIME_KEY = "PAUSE_TIME_KEY";
 	
 	/**
 	 * A container for the timer setting mechanism
