@@ -117,7 +117,7 @@ public class TimerActivity extends ListActivity {
 		super.onResume();
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
 		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
-		boolean isRunning = settings.getBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+		boolean isRunning = settings.getBoolean(TimerPrepAndRunningActivity.IS_RUNNING_KEY, false);
 		
 		if (isRunning){
 			
@@ -187,7 +187,7 @@ public class TimerActivity extends ListActivity {
 		// let the whole application know that the timer is now running
 		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
 	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
+	    editor.putBoolean(TimerPrepAndRunningActivity.IS_RUNNING_KEY, true);
 	    editor.commit();
 		
 	    
@@ -318,7 +318,7 @@ public class TimerActivity extends ListActivity {
 	private void writePauseTime() {
 		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putLong(TimerPrepActivity.PAUSE_TIME_KEY, timeOnClock);
+		editor.putLong(TimerPrepAndRunningActivity.PAUSE_TIME_KEY, timeOnClock);
 	    editor.commit();
 	}
 	
@@ -399,7 +399,7 @@ public class TimerActivity extends ListActivity {
 					// let the whole application know that the timer is now NOT running
 				    SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
 				    SharedPreferences.Editor editor = settings.edit();
-				    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+				    editor.putBoolean(TimerPrepAndRunningActivity.IS_RUNNING_KEY, false);
 				    editor.commit();
 				}
 				
