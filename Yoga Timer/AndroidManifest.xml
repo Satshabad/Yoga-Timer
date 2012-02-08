@@ -13,7 +13,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:name=".TimerPrepActivity"></activity>
+		<activity android:name=".TimerPrepAndRunningActivity"></activity>
 		<activity android:name=".TimerActivity"></activity>
 		
     </application>
