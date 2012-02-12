@@ -1,8 +1,10 @@
 package net.satshabad.android.yogatimer;
 
-public class MyCountDownTimerWrapper {
+import java.io.Serializable;
 
-	private TimerActivity timerActivity;
+public class MyCountDownTimerWrapper implements Serializable {
+
+	private transient TimerActivity timerActivity;
 	private MyCountDownTimer countDownTimer;
 	private boolean isRunning;
 	private static final long ONE_SECOND = 1000;
@@ -74,6 +76,11 @@ public class MyCountDownTimerWrapper {
 	public void timerTick(long millisUntilFinished) {
 		timerActivity.timerTick(millisUntilFinished);
 		pauseTime = millisUntilFinished;
+		
+	}
+
+	public void setActivity(TimerActivity t) {
+		timerActivity =t;
 		
 	}
 

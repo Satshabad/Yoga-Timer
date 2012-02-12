@@ -1,5 +1,10 @@
 package net.satshabad.android.yogatimer;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -9,21 +14,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author satshabad
  * 
  */
 public class TimerActivity extends ListActivity {
+
+	private static final String COUNT_DOWN_TIMER = "COUNT_DOWN_TIMER";
 
 	/**
 	 * A list to hold the exercises to be counted down
@@ -97,35 +105,89 @@ public class TimerActivity extends ListActivity {
 	private final String EXERCISE_LIST = "EXERCISE_LIST";
 
 
-	
-	
-	public void onStart() {
-		super.onStart();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onStart has been called");
-	}
-
 	public void onResume() {
 		super.onResume();
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
-		unPauseTimer();
+		boolean isRunning = isRunning();
+
+		if (isRunning) {
+
+			try {
+				FileInputStream file = openFileInput(EXERCISE_LIST);
+				ObjectInputStream input = new ObjectInputStream(file);
+				exerciseList = (ArrayList<Exercise>) input.readObject();
+
+				file =  openFileInput(EXERCISE_STACK);
+				input = new ObjectInputStream(file);
+				completedExerciseStack = (Stack<Exercise>) input.readObject();
+				
+				file =  openFileInput(COUNT_DOWN_TIMER);
+				input = new ObjectInputStream(file);
+				countDownTimer = (MyCountDownTimerWrapper) input.readObject();
+				countDownTimer.setActivity(this);
+				
+				
+			} catch (Exception e) {
+				Log.e(MainMenuActivity.LOG_TAG,
+						"Some thing went wrong when trying to get list and stack from file");
+			}
+		}else{
+			
+			if (exerciseList == null){
+				exerciseList = new ArrayList<Exercise>();
+			}
+			completedExerciseStack = new Stack<Exercise>();
+			countDownTimer = new MyCountDownTimerWrapper(this);
+		}
+		// display the list of exercises
+		adapter = new ExerciseAdapter(this, exerciseList);
+		setListAdapter(adapter);
+		
+		// grab the first exercise
+		currentExercise = exerciseList.remove(0);
+		adapter.notifyDataSetChanged();
+
+		if (isRunning) {
+			// aready running? just unpause it.
+			// also set title
+			currentExerciseName.setText(currentExercise.getName());
+			unPauseTimer();
+		}else{
+			// start with the first exercise
+			startCountDown(currentExercise);
+		}
+		
 	}
 
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
-		Log.d(MainMenuActivity.LOG_TAG,
-				"Timer/ onSaveInstanceState has been called");
-
-		savedInstanceState.putSerializable(EXERCISE_STACK,
-				completedExerciseStack);
-		savedInstanceState.putSerializable(EXERCISE_LIST, exerciseList);
-
-
-	}
 
 	public void onPause() {
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onPaused has been called");
 		super.onPause();
 		pauseTimer();
+		// notify the user that the timer was paused
+		Toast.makeText(getApplicationContext(), "Timer Paused",
+				Toast.LENGTH_LONG).show();
+		exerciseList.add(0, currentExercise);
+
+		try {
+			FileOutputStream fout = openFileOutput(EXERCISE_LIST, Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(exerciseList);
+
+			fout = openFileOutput(EXERCISE_STACK, Context.MODE_PRIVATE);
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(completedExerciseStack);
+			
+			fout = openFileOutput(COUNT_DOWN_TIMER, Context.MODE_PRIVATE);
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(countDownTimer);
+
+			oos.close();
+			fout.close();
+		} catch (IOException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Some thing went wrong when trying to put list and stack to file");
+			e.printStackTrace();
+		};
 		
 	}
 	
@@ -150,39 +212,18 @@ public class TimerActivity extends ListActivity {
 		timeDisplay = (TextView) findViewById(R.id.time_display);
 
 		countDownTimer = new MyCountDownTimerWrapper(this);
-
-		if (savedInstanceState == null) {
-			// get the list of exercises
-			Intent thisIntent = getIntent();
-			Bundle listBundle = thisIntent.getExtras();
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+		if (!isRunning()) {
 			try {
+				// get the list of exercises
+				Intent thisIntent = getIntent();
+				Bundle listBundle = thisIntent.getExtras();
 				exerciseList = (ArrayList<Exercise>) listBundle
 						.getSerializable("thelist");
 			} catch (Exception e) {
-				Log.e(MainMenuActivity.LOG_TAG,
-						"Some thing went wrong when trying to get list");
-			}
-			completedExerciseStack = new Stack<Exercise>();
-		} else {
-
-			try {
-				 exerciseList= (ArrayList<Exercise>) savedInstanceState
-						.getSerializable(EXERCISE_STACK);
-				 completedExerciseStack= (Stack<Exercise>) savedInstanceState
-						.getSerializable(EXERCISE_LIST);
-			} catch (Exception e) {
-
-				Log.e(MainMenuActivity.LOG_TAG,
-						"problem getting old list or stack", e);
 
 			}
-
 		}
-
-		Log.e(MainMenuActivity.LOG_TAG, "here2");
-		// display the list of exercises
-		adapter = new ExerciseAdapter(this, exerciseList);
-		setListAdapter(adapter);
 
 		theListView = getListView();
 		// when an exercise in the list is clicked, start from that exercise
@@ -256,13 +297,6 @@ public class TimerActivity extends ListActivity {
 			}
 
 		});
-
-		// grab the first exercise
-		currentExercise = exerciseList.remove(0);
-		adapter.notifyDataSetChanged();
-
-		// start with the first exercise
-		startCountDown(currentExercise);
 	}
 
 	public void startCountDown(final Exercise ex) {
@@ -380,6 +414,13 @@ public class TimerActivity extends ListActivity {
 	private void prepAndPauseTimer(){
 		timeDisplay.setText(Exercise.timeToString(currentExercise.getTime()));
 		countDownTimer.pauseTimer();
+	}
+	
+	private boolean isRunning() {
+		SharedPreferences settings = getSharedPreferences(
+				MainMenuActivity.PREFS_NAME, 0);
+		return settings.getBoolean(
+				TimerPrepAndRunningActivity.IS_RUNNING_KEY, false);
 	}
 
 }
