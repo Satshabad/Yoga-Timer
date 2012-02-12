@@ -5,31 +5,31 @@
 
     <Button
         style="@style/app_button"
-        android:id="@+id/button1"
+        android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignRight="@+id/button2"
+        android:layout_alignLeft="@+id/resume_button"
+        android:layout_alignRight="@+id/resume_button"
         android:layout_centerVertical="true"
         android:text="Cancel Set" />
 
     <Button
         style="@style/app_button"
-        android:id="@id/button2"
+        android:id="@id/resume_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
+        android:layout_above="@id/cancel_button"
         android:layout_centerHorizontal="true"
         android:text="Resume Set" />
 
     <Button
         style="@style/app_button"
-        android:id="@+id/button3"
+        android:id="@+id/save_set_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/button1"
-        android:layout_alignRight="@id/button1"
-        android:layout_below="@id/button1"
+        android:layout_alignLeft="@id/cancel_button"
+        android:layout_alignRight="@id/cancel_button"
+        android:layout_below="@id/cancel_button"
         android:text="Save Set" />
 
     <ListView
@@ -37,7 +37,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/button3"
+        android:layout_below="@+id/save_set_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="64dp" >
 

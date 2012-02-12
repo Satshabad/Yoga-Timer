@@ -62,7 +62,7 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 
 		if (isRunning) {
 			setContentView(R.layout.running_timer_layout);
-
+			setRunningButtonViews();
 		} else {
 			setContentView(R.layout.timer_prep_layout);
 			setTimerPrepButtonViews();

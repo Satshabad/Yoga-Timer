@@ -197,11 +197,7 @@ public class TimerActivity extends ListActivity {
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onCreate has been called");
 		setContentView(R.layout.timer_layout);
 		
-		// let the whole application know that the timer is now running
-		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
-	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
-	    editor.commit();
+
 		
 	    
 		// create buttons and other views
@@ -301,6 +297,13 @@ public class TimerActivity extends ListActivity {
 
 	public void startCountDown(final Exercise ex) {
 
+		// let the whole application know that the timer is now running
+		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
+	    editor.commit();
+		
+		
 		// set the display to the name of the current exercise
 		currentExerciseName.setText(ex.getName());
 
