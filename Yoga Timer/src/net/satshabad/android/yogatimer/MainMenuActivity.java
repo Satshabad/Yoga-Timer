@@ -51,7 +51,7 @@ public class MainMenuActivity extends Activity {
      */
     private void launchTimer(){
        Log.d(LOG_TAG, "YogaTimerActivity/ActivityStart/TimerPrep");
-       startActivity(new Intent(this, TimerPrepActivity.class));
+       startActivity(new Intent(this, TimerPrepAndRunningActivity.class));
        
     }
 }
