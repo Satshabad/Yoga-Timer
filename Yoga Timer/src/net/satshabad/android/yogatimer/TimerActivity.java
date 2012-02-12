@@ -1,18 +1,12 @@
 package net.satshabad.android.yogatimer;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.jar.Attributes.Name;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -23,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -215,7 +210,7 @@ public class TimerActivity extends ListActivity {
 		timeDisplay = (TextView) findViewById(R.id.time_display);
 
 		countDownTimer = new MyCountDownTimerWrapper(this);
-		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		if (!isRunning()) {
 			try {
 				// get the list of exercises
