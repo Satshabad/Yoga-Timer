@@ -1,5 +1,7 @@
 package net.satshabad.android.yogatimer;
 
+import java.io.Serializable;
+
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
@@ -10,7 +12,7 @@ import android.widget.TextView;
  * @author satshabad
  * 
  */
-public class MyCountDownTimer extends CountDownTimer {
+public class MyCountDownTimer extends CountDownTimer implements Serializable{
 	private MyCountDownTimerWrapper ActivityWaitingForResponse;
 	private long timeLeft;
 	
