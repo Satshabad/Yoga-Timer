@@ -16,13 +16,17 @@ import android.util.Log;
 
 public class StorageManager {
 
+	private static final String LIST = "_LIST";
+	private static final String STACK = "_STACK";
+	private static final String COUNT = "_COUNT";
+
 	public static void putRunningList(ArrayList<Exercise> list, String key,
 			Activity callingActivity) {
 		FileOutputStream fout = null;
 		ObjectOutputStream oos = null;
 		try {
 
-			fout = callingActivity.openFileOutput(key, Context.MODE_PRIVATE);
+			fout = callingActivity.openFileOutput(key+LIST, Context.MODE_PRIVATE);
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(list);
 
@@ -50,7 +54,7 @@ public class StorageManager {
 		ObjectOutputStream oos = null;
 		try {
 
-			fout = callingActivity.openFileOutput(key, Context.MODE_PRIVATE);
+			fout = callingActivity.openFileOutput(key+STACK, Context.MODE_PRIVATE);
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(stack);
 
@@ -79,7 +83,7 @@ public class StorageManager {
 		ObjectOutputStream oos = null;
 		try {
 
-			fout = callingActivity.openFileOutput(key, Context.MODE_PRIVATE);
+			fout = callingActivity.openFileOutput(key+COUNT, Context.MODE_PRIVATE);
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(countDownTimer);
 
@@ -106,7 +110,7 @@ public class StorageManager {
 		FileInputStream file = null;
 		ObjectInputStream input= null;
 		try {
-		    file = callingActivity.openFileInput(key);
+		    file = callingActivity.openFileInput(key+LIST);
 			input = new ObjectInputStream(file);
 			return (ArrayList<Exercise>) input.readObject();
 		} catch (StreamCorruptedException e) {
@@ -147,7 +151,7 @@ public class StorageManager {
 		FileInputStream file = null;
 		ObjectInputStream input= null;
 		try {
-		    file = callingActivity.openFileInput(key);
+		    file = callingActivity.openFileInput(key+STACK);
 			input = new ObjectInputStream(file);
 			return (Stack<Exercise>) input.readObject();
 		} catch (StreamCorruptedException e) {
@@ -187,7 +191,7 @@ public class StorageManager {
 		FileInputStream file = null;
 		ObjectInputStream input= null;
 		try {
-		    file = callingActivity.openFileInput(key);
+		    file = callingActivity.openFileInput(key+COUNT);
 			input = new ObjectInputStream(file);
 			return (MyCountDownTimerWrapper) input.readObject();
 		} catch (StreamCorruptedException e) {

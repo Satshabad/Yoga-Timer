@@ -31,7 +31,7 @@ import android.widget.Toast;
  */
 public class TimerActivity extends ListActivity {
 
-	private static final String COUNT_DOWN_TIMER = "COUNT_DOWN_TIMER";
+	private static final String RUNNING = "RUNNING";
 
 	/**
 	 * A list to hold the exercises to be counted down
@@ -94,15 +94,6 @@ public class TimerActivity extends ListActivity {
 	 */
 	private Button resetExerciseButton;
 
-	/**
-	 * Key to grab the exercise stack from the preferences
-	 */
-	private final String EXERCISE_STACK = "EXERCISE_STACK";
-
-	/**
-	 * Key to grab the exercise list from the preferences
-	 */
-	private final String EXERCISE_LIST = "EXERCISE_LIST";
 
 
 	public void onResume() {
@@ -111,26 +102,10 @@ public class TimerActivity extends ListActivity {
 		boolean isRunning = isRunning();
 
 		if (isRunning) {
-
-			try {
-				FileInputStream file = openFileInput(EXERCISE_LIST);
-				ObjectInputStream input = new ObjectInputStream(file);
-				exerciseList = (ArrayList<Exercise>) input.readObject();
-
-				file =  openFileInput(EXERCISE_STACK);
-				input = new ObjectInputStream(file);
-				completedExerciseStack = (Stack<Exercise>) input.readObject();
-				
-				file =  openFileInput(COUNT_DOWN_TIMER);
-				input = new ObjectInputStream(file);
-				countDownTimer = (MyCountDownTimerWrapper) input.readObject();
-				countDownTimer.setActivity(this);
-				
-				
-			} catch (Exception e) {
-				Log.e(MainMenuActivity.LOG_TAG,
-						"Some thing went wrong when trying to get list and stack from file");
-			}
+			exerciseList = StorageManager.getRunningList(RUNNING, this);
+			completedExerciseStack = StorageManager.getRunningStack(RUNNING, this);
+			countDownTimer = StorageManager.getRunningCountDownTimer(RUNNING, this);
+			countDownTimer.setActivity(this);
 		}else{
 			
 			if (exerciseList == null){
@@ -167,27 +142,10 @@ public class TimerActivity extends ListActivity {
 		Toast.makeText(getApplicationContext(), "Timer Paused",
 				Toast.LENGTH_LONG).show();
 		exerciseList.add(0, currentExercise);
-
-		try {
-			FileOutputStream fout = openFileOutput(EXERCISE_LIST, Context.MODE_PRIVATE);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(exerciseList);
-
-			fout = openFileOutput(EXERCISE_STACK, Context.MODE_PRIVATE);
-			oos = new ObjectOutputStream(fout);
-			oos.writeObject(completedExerciseStack);
-			
-			fout = openFileOutput(COUNT_DOWN_TIMER, Context.MODE_PRIVATE);
-			oos = new ObjectOutputStream(fout);
-			oos.writeObject(countDownTimer);
-
-			oos.close();
-			fout.close();
-		} catch (IOException e) {
-			Log.e(MainMenuActivity.LOG_TAG,
-					"Some thing went wrong when trying to put list and stack to file");
-			e.printStackTrace();
-		};
+		
+		StorageManager.putRunningCountDownTimer(countDownTimer, RUNNING, this);
+		StorageManager.putRunningList(exerciseList, RUNNING, this);
+		StorageManager.putRunningStack(completedExerciseStack, RUNNING, this);
 		
 	}
 	
