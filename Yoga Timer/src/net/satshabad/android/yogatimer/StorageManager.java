@@ -19,6 +19,7 @@ public class StorageManager {
 	private static final String LIST = "_LIST";
 	private static final String STACK = "_STACK";
 	private static final String COUNT = "_COUNT";
+	private static final String RUNNING = "RUNNING";
 
 	public static void putRunningList(ArrayList<Exercise> list, String key,
 			Activity callingActivity) {
@@ -294,4 +295,78 @@ public class StorageManager {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Object getRunningObject(String key, String description, Activity callingActivity){
+		FileInputStream file = null;
+		ObjectInputStream input= null;
+		try {
+		    file = callingActivity.openFileInput(RUNNING+key);
+			input = new ObjectInputStream(file);
+			if (key== COUNT) {
+				return (MyCountDownTimerWrapper) input.readObject();
+			}else if (key == LIST){
+				return (ArrayList<Exercise>) input.readObject();
+			}else if (key == STACK){
+				return (Stack<Exercise>) input.readObject();
+			}
+		} catch (StreamCorruptedException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Could not get running "+ description +" from file");
+			e.printStackTrace();
+		} catch (OptionalDataException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Could not get running "+ description +" from file");
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Could not get running "+ description +" from file");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Could not get running"+ description +" from file");
+			e.printStackTrace();
+		}finally{
+			
+			try {
+				if (file != null && input != null) {
+					file.close();
+					input.close();
+				}
+			} catch (IOException e) {
+				Log.e(MainMenuActivity.LOG_TAG,
+						"Could not close files while getting running "+ description +" from file");
+				e.printStackTrace();
+			}
+			
+		}
+		return null;
+	}
+	
+	private static void putRunningObject(Object object,String key, String description, Activity callingActivity){
+		FileOutputStream fout = null;
+		ObjectOutputStream oos = null;
+		try {
+
+			fout = callingActivity.openFileOutput(RUNNING+key, Context.MODE_PRIVATE);
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(object);
+
+		} catch (IOException e) {
+			Log.e(MainMenuActivity.LOG_TAG,
+					"Could not put"+ description +"to file");
+			e.printStackTrace();
+		} finally {
+			try {
+				if (oos != null && fout != null) {
+					oos.close();
+					fout.close();
+				}
+			} catch (IOException e) {
+				Log.e(MainMenuActivity.LOG_TAG,
+						"Could not close files in attempt to get" + description);
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }
