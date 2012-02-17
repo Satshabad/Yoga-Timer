@@ -94,6 +94,8 @@ public class TimerActivity extends ListActivity {
 	 */
 	private Button resetExerciseButton;
 
+	private StorageManager storage;
+
 
 
 	public void onResume() {
@@ -102,10 +104,12 @@ public class TimerActivity extends ListActivity {
 		boolean isRunning = isRunning();
 
 		if (isRunning) {
-			exerciseList = StorageManager.getRunningList(RUNNING, this);
-			completedExerciseStack = StorageManager.getRunningStack(RUNNING, this);
-			countDownTimer = StorageManager.getRunningCountDownTimer(RUNNING, this);
+			storage = new StorageManager();
+			exerciseList = storage.getRunningList(RUNNING, this);
+			completedExerciseStack = storage.getRunningStack(RUNNING, this);
+			countDownTimer = storage.getRunningCountDownTimer(RUNNING, this);
 			countDownTimer.setActivity(this);
+			storage = null;
 		}else{
 			
 			if (exerciseList == null){
@@ -142,11 +146,11 @@ public class TimerActivity extends ListActivity {
 		Toast.makeText(getApplicationContext(), "Timer Paused",
 				Toast.LENGTH_LONG).show();
 		exerciseList.add(0, currentExercise);
-		
-		StorageManager.putRunningCountDownTimer(countDownTimer, RUNNING, this);
-		StorageManager.putRunningList(exerciseList, RUNNING, this);
-		StorageManager.putRunningStack(completedExerciseStack, RUNNING, this);
-		
+		storage = new StorageManager();
+		storage.putRunningCountDownTimer(countDownTimer, RUNNING, this);
+		storage.putRunningList(exerciseList, RUNNING, this);
+		storage.putRunningStack(completedExerciseStack, RUNNING, this);
+		storage =  null;
 	}
 	
 	@SuppressWarnings("unchecked")
