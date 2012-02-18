@@ -14,6 +14,7 @@ public class YogaTimerActivity extends Activity {
      * Tag for the LogCat logs for this app
      */
     public static final String LOG_TAG = "Yoga Timer";
+	public static final String IS_RUNNING_KEY = "IS_RUNNING_KEY";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {

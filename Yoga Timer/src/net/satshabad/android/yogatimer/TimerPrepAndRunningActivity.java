@@ -18,10 +18,6 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
 public class TimerPrepAndRunningActivity extends ListActivity {
 
-	public static final String IS_RUNNING_KEY = "IS_RUNNING_KEY";
-
-	public static final String PAUSE_TIME_KEY = "PAUSE_TIME_KEY";
-
 	/**
 	 * A container for the timer setting mechanism
 	 */
@@ -160,7 +156,7 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 				SharedPreferences settings = getSharedPreferences(
 						MainMenuActivity.PREFS_NAME, 0);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.putBoolean(TimerPrepAndRunningActivity.IS_RUNNING_KEY,
+				editor.putBoolean(YogaTimerActivity.IS_RUNNING_KEY,
 						false);
 				editor.commit();
 				finish();
@@ -181,7 +177,7 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	private boolean isRunning() {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
-		boolean isRunning = settings.getBoolean(IS_RUNNING_KEY, false);
+		boolean isRunning = settings.getBoolean(YogaTimerActivity.IS_RUNNING_KEY, false);
 		return isRunning;
 	}
 
