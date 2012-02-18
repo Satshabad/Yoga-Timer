@@ -223,8 +223,9 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	public void saveSet(String setName){
 		storageManager = new StorageManager();
 		storageManager.putSet(exerciseList, setName, this);
-		YogaTimerActivity.setKeys.add(setName);
+		storageManager.addSetKey(setName, this);
 	}
+
 	
     protected AlertDialog onCreateDialog(int id) {
         AlertDialog dialog;
