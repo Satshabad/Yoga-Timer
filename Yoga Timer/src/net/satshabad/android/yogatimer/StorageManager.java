@@ -143,7 +143,8 @@ public class StorageManager {
 					Context.MODE_PRIVATE);
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(object);
-
+			Log.d(MainMenuActivity.LOG_TAG,
+					"Wrote file to " + fout.toString());
 		} catch (IOException e) {
 			Log.e(MainMenuActivity.LOG_TAG, "Could not put" + description
 					+ "to file");

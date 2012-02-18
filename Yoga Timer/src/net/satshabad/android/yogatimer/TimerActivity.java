@@ -421,7 +421,7 @@ public class TimerActivity extends ListActivity {
 	private boolean isRunning() {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
-		return settings.getBoolean(YogaTimerActivity.IS_RUNNING_PREF_KEY, false);
+		return settings.getBoolean(MainMenuActivity.IS_RUNNING_PREF_KEY, false);
 	}
 
 }

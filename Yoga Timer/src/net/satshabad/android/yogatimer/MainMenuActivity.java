@@ -1,5 +1,7 @@
 package net.satshabad.android.yogatimer;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +20,8 @@ public class MainMenuActivity extends Activity {
     public static final String LOG_TAG = "Yoga Timer";
     public static final String PREFS_NAME = "PREFS_NAME";
     
+	public static final String IS_RUNNING_PREF_KEY = "IS_RUNNING_KEY";
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +31,12 @@ public class MainMenuActivity extends Activity {
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
 	    editor.commit();
+	    
+        
+        StorageManager manager = new StorageManager();
+        manager.putKeysToFile(new ArrayList<String>(), this);
+        manager = null;
+        
         
         // this button leads to the timerPrep activity
         Button newSet = (Button)findViewById(R.id.the_new_button);
