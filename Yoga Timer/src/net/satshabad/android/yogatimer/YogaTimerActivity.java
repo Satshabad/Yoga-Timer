@@ -1,5 +1,8 @@
 package net.satshabad.android.yogatimer;
 
+import java.util.ArrayList;
+
+import android.R.string;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +17,16 @@ public class YogaTimerActivity extends Activity {
      * Tag for the LogCat logs for this app
      */
     public static final String LOG_TAG = "Yoga Timer";
-	public static final String IS_RUNNING_KEY = "IS_RUNNING_KEY";
+    
+	/**
+	 * 
+	 */
+	public static final String IS_RUNNING_PREF_KEY = "IS_RUNNING_KEY";
+	
+	/**
+	 * The list of set names that act as keys to get the files
+	 */
+	public static ArrayList<String> setKeys;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +35,10 @@ public class YogaTimerActivity extends Activity {
         
         // this button leads to the timerPrep activity
         Button newSet = (Button)findViewById(R.id.the_new_button);
+        
+        StorageManager manager = new StorageManager();
+        manager.putKeysToFile(new ArrayList<String>(), this);
+        manager = null;
         
         //on the click the timerPrep activity will launch
         newSet.setOnClickListener(new OnClickListener()

@@ -68,9 +68,16 @@ public class StorageManager {
 		putObject(keysList, KEYS, "set keys", callingActivity);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getSetKeysFromFile(Activity callingActivity) {
 		return (ArrayList<String>) getObject(KEYS, "set keys", callingActivity);
 		
+	}
+	
+	public void addSetKey(String setName, Activity callingActivity) {
+		ArrayList<String> keysList = getSetKeysFromFile(callingActivity);
+		keysList.add(setName);
+		putKeysToFile(keysList, callingActivity);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -88,7 +95,7 @@ public class StorageManager {
 			} else if (key == STACK) {
 				return (Stack<Exercise>) input.readObject();
 			} else if(key == KEYS){
-				return (Stack<String>) input.readObject();
+				return (ArrayList<String>) input.readObject();
 			}else{
 				return (ArrayList<Exercise>) input.readObject();
 			}
