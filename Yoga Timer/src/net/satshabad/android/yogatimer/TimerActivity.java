@@ -28,12 +28,6 @@ import android.widget.Toast;
 public class TimerActivity extends ListActivity {
 
 	/**
-	 * The key used to store and retrieve the stack, list and count down timer
-	 * objects
-	 */
-	private static final String RUNNING_FILES_KEY = "RUNNING";
-
-	/**
 	 * A list to hold the exercises to be counted down
 	 */
 	private ArrayList<Exercise> exerciseList;
@@ -105,10 +99,10 @@ public class TimerActivity extends ListActivity {
 			// Store objects that will be retrieved when the activity resumes in
 			// onResume
 			storage = new StorageManager();
-			storage.putRunningCountDownTimer(countDownTimer, RUNNING_FILES_KEY,
+			storage.putRunningCountDownTimer(countDownTimer,
 					this);
-			storage.putRunningList(exerciseList, RUNNING_FILES_KEY, this);
-			storage.putRunningStack(completedExerciseStack, RUNNING_FILES_KEY,
+			storage.putRunningList(exerciseList, this);
+			storage.putRunningStack(completedExerciseStack,
 					this);
 			storage = null;
 		}
@@ -122,11 +116,9 @@ public class TimerActivity extends ListActivity {
 
 			// Retrieve objects needed to continue the countdown timer
 			storage = new StorageManager();
-			exerciseList = storage.getRunningList(RUNNING_FILES_KEY, this);
-			completedExerciseStack = storage.getRunningStack(RUNNING_FILES_KEY,
-					this);
-			countDownTimer = storage.getRunningCountDownTimer(
-					RUNNING_FILES_KEY, this);
+			exerciseList = storage.getRunningList(this);
+			completedExerciseStack = storage.getRunningStack(this);
+			countDownTimer = storage.getRunningCountDownTimer(this);
 
 			// This activity may have been killed during the pause, so reset it.
 			countDownTimer.setActivity(this);
@@ -429,7 +421,7 @@ public class TimerActivity extends ListActivity {
 	private boolean isRunning() {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
-		return settings.getBoolean(YogaTimerActivity.IS_RUNNING_KEY, false);
+		return settings.getBoolean(YogaTimerActivity.IS_RUNNING_PREF_KEY, false);
 	}
 
 }

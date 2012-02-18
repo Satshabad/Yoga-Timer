@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
-import java.io.ObjectOutputStream.PutField;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -20,135 +19,93 @@ public class StorageManager {
 	private final String LIST = "_LIST";
 	private final String STACK = "_STACK";
 	private final String COUNT = "_COUNT";
-	private final String RUNNING = "RUNNING";
+	private final String KEYS = "_KEYS";
+	
 
-	public void putRunningList(ArrayList<Exercise> list, String key,
+	public void putRunningList(ArrayList<Exercise> list,
 			Activity callingActivity) {
-		putRunningObject(list, key, "running list", callingActivity);
+		putObject(list, LIST, "running list", callingActivity);
 
 	}
 
-	public void putRunningStack(Stack<Exercise> stack, String key,
-			Activity callingActivity) {
-		putRunningObject(stack, key, "running stack", callingActivity);
+	public void putRunningStack(Stack<Exercise> stack, Activity callingActivity) {
+		putObject(stack, STACK,"running stack", callingActivity);
 	}
 
 	public void putRunningCountDownTimer(
-			MyCountDownTimerWrapper countDownTimer, String key,
+			MyCountDownTimerWrapper countDownTimer,
 			Activity callingActivity) {
 
-		putRunningObject(countDownTimer, key, "running count down timer",
+		putObject(countDownTimer,COUNT,"running count down timer",
 				callingActivity);
 	}
 
 	@SuppressWarnings("unchecked")
-	public ArrayList<Exercise> getRunningList(String key,
-			Activity callingActivity) {
-		return (ArrayList<Exercise>) getRunningObject(key, "running list", callingActivity);
+	public ArrayList<Exercise> getRunningList(Activity callingActivity) {
+		return (ArrayList<Exercise>) getObject(LIST, "running list", callingActivity);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Stack<Exercise> getRunningStack(String key, Activity callingActivity) {
-		return (Stack<Exercise>) getRunningObject(key, "running stack", callingActivity);
+	public Stack<Exercise> getRunningStack(Activity callingActivity) {
+		return (Stack<Exercise>) getObject(STACK, "running stack", callingActivity);
 	}
 
-	public MyCountDownTimerWrapper getRunningCountDownTimer(String key,
-			Activity callingActivity) {
-		return (MyCountDownTimerWrapper) getRunningObject(key, "running count down timer", callingActivity);
+	public MyCountDownTimerWrapper getRunningCountDownTimer(Activity callingActivity) {
+		return (MyCountDownTimerWrapper) getObject(COUNT, "running count down timer", callingActivity);
 	}
 
 	public void putSet(ArrayList<Exercise> list, String key,
 			Activity callingActivity) {
-		FileOutputStream fout = null;
-		ObjectOutputStream oos = null;
-		try {
-
-			fout = callingActivity.openFileOutput(key, Context.MODE_PRIVATE);
-			oos = new ObjectOutputStream(fout);
-			oos.writeObject(list);
-
-		} catch (IOException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not put set to file");
-			e.printStackTrace();
-		} finally {
-			try {
-				if (oos != null && fout != null) {
-					oos.close();
-					fout.close();
-				}
-			} catch (IOException e) {
-				Log.e(MainMenuActivity.LOG_TAG,
-						"Could not close running set files in attempt to get put set");
-				e.printStackTrace();
-			}
-		}
+		putObject(list, key, "set", callingActivity);
 	}
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Exercise> getSet(String key, Activity callingActivity) {
+		return (ArrayList<Exercise>) getObject(key, "set", callingActivity);
+	}
+
+	public void putKeysToFile(ArrayList<String> keysList, Activity callingActivity){
+		putObject(keysList, KEYS, "set keys", callingActivity);
+	}
+	
+	public ArrayList<String> getSetKeysFromFile(Activity callingActivity) {
+		return (ArrayList<String>) getObject(KEYS, "set keys", callingActivity);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Object getObject(String key, String description,
+			Activity callingActivity) {
 		FileInputStream file = null;
 		ObjectInputStream input = null;
 		try {
 			file = callingActivity.openFileInput(key);
 			input = new ObjectInputStream(file);
-			return (ArrayList<Exercise>) input.readObject();
-		} catch (StreamCorruptedException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get set from file");
-			e.printStackTrace();
-		} catch (OptionalDataException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get set from file");
-			e.printStackTrace();
-		} catch (IOException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get set from file");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get set from file");
-			e.printStackTrace();
-		} finally {
-
-			try {
-				if (file != null && input != null) {
-					file.close();
-					input.close();
-				}
-			} catch (IOException e) {
-				Log.e(MainMenuActivity.LOG_TAG,
-						"Could not close files while getting set from file");
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Object getRunningObject(String key, String description,
-			Activity callingActivity) {
-		FileInputStream file = null;
-		ObjectInputStream input = null;
-		try {
-			file = callingActivity.openFileInput(RUNNING + key);
-			input = new ObjectInputStream(file);
 			if (key == COUNT) {
 				return (MyCountDownTimerWrapper) input.readObject();
 			} else if (key == LIST) {
-				return (ArrayList<Exercise>) input.readObject();
+				return (Stack<Exercise>) input.readObject();
 			} else if (key == STACK) {
 				return (Stack<Exercise>) input.readObject();
+			} else if(key == KEYS){
+				return (Stack<String>) input.readObject();
+			}else{
+				return (ArrayList<Exercise>) input.readObject();
 			}
 		} catch (StreamCorruptedException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get running "
+			Log.e(MainMenuActivity.LOG_TAG, "Could not get "
 					+ description + " from file");
 			e.printStackTrace();
 		} catch (OptionalDataException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get running "
+			Log.e(MainMenuActivity.LOG_TAG, "Could not get "
 					+ description + " from file");
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get running "
+			Log.e(MainMenuActivity.LOG_TAG, "Could not get "
 					+ description + " from file");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			Log.e(MainMenuActivity.LOG_TAG, "Could not get running"
+			Log.e(MainMenuActivity.LOG_TAG, "Could not get "
 					+ description + " from file");
 			e.printStackTrace();
 		} finally {
@@ -160,7 +117,7 @@ public class StorageManager {
 				}
 			} catch (IOException e) {
 				Log.e(MainMenuActivity.LOG_TAG,
-						"Could not close files while getting running "
+						"Could not close files while getting "
 								+ description + " from file");
 				e.printStackTrace();
 			}
@@ -169,13 +126,13 @@ public class StorageManager {
 		return null;
 	}
 
-	private void putRunningObject(Object object, String key,
+	private void putObject(Object object, String key,
 			String description, Activity callingActivity) {
 		FileOutputStream fout = null;
 		ObjectOutputStream oos = null;
 		try {
 
-			fout = callingActivity.openFileOutput(RUNNING + key,
+			fout = callingActivity.openFileOutput(key,
 					Context.MODE_PRIVATE);
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(object);

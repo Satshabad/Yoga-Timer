@@ -163,7 +163,7 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 				SharedPreferences settings = getSharedPreferences(
 						MainMenuActivity.PREFS_NAME, 0);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.putBoolean(YogaTimerActivity.IS_RUNNING_KEY,
+				editor.putBoolean(YogaTimerActivity.IS_RUNNING_PREF_KEY,
 						false);
 				editor.commit();
 				finish();
@@ -184,7 +184,7 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	private boolean isRunning() {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
-		boolean isRunning = settings.getBoolean(YogaTimerActivity.IS_RUNNING_KEY, false);
+		boolean isRunning = settings.getBoolean(YogaTimerActivity.IS_RUNNING_PREF_KEY, false);
 		return isRunning;
 	}
 
@@ -222,7 +222,8 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	
 	public void saveSet(String setName){
 		storageManager = new StorageManager();
-		
+		storageManager.putSet(exerciseList, setName, this);
+		YogaTimerActivity.setKeys.add(setName);
 	}
 	
     protected AlertDialog onCreateDialog(int id) {
