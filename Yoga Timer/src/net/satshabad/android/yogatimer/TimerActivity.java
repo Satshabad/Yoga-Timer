@@ -1,15 +1,9 @@
 package net.satshabad.android.yogatimer;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -26,22 +20,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
+ * This Activity manages a running list of timers that are set off in serial.
+ * 
  * @author satshabad
  * 
  */
 public class TimerActivity extends ListActivity {
 
-	private static final String RUNNING = "RUNNING";
+	/**
+	 * The key used to store and retrieve the stack, list and count down timer
+	 * objects
+	 */
+	private static final String RUNNING_FILES_KEY = "RUNNING";
 
 	/**
 	 * A list to hold the exercises to be counted down
 	 */
 	private ArrayList<Exercise> exerciseList;
-
-	/**
-	 * The time displayed to the user in milliseconds
-	 */
-	private long timeOnClock;
 
 	/**
 	 * the exercise currently being counted down
@@ -94,25 +89,53 @@ public class TimerActivity extends ListActivity {
 	 */
 	private Button resetExerciseButton;
 
+	/**
+	 * Manages storing and retrieving files
+	 */
 	private StorageManager storage;
 
-
+	public void onPause() {
+		super.onPause();
+		if (!isRunning()) {
+			pauseTimer();
+			// notify the user that the timer was paused
+			Toast.makeText(getApplicationContext(), "Timer Paused",
+					Toast.LENGTH_LONG).show();
+			exerciseList.add(0, currentExercise);
+			// Store objects that will be retrieved when the activity resumes in
+			// onResume
+			storage = new StorageManager();
+			storage.putRunningCountDownTimer(countDownTimer, RUNNING_FILES_KEY,
+					this);
+			storage.putRunningList(exerciseList, RUNNING_FILES_KEY, this);
+			storage.putRunningStack(completedExerciseStack, RUNNING_FILES_KEY,
+					this);
+			storage = null;
+		}
+	}
 
 	public void onResume() {
 		super.onResume();
-		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onResume has been called");
 		boolean isRunning = isRunning();
 
 		if (isRunning) {
+
+			// Retrieve objects needed to continue the countdown timer
 			storage = new StorageManager();
-			exerciseList = storage.getRunningList(RUNNING, this);
-			completedExerciseStack = storage.getRunningStack(RUNNING, this);
-			countDownTimer = storage.getRunningCountDownTimer(RUNNING, this);
+			exerciseList = storage.getRunningList(RUNNING_FILES_KEY, this);
+			completedExerciseStack = storage.getRunningStack(RUNNING_FILES_KEY,
+					this);
+			countDownTimer = storage.getRunningCountDownTimer(
+					RUNNING_FILES_KEY, this);
+
+			// This activity may have been killed during the pause, so reset it.
 			countDownTimer.setActivity(this);
 			storage = null;
-		}else{
-			
-			if (exerciseList == null){
+		} else {
+
+			// If exerciseList was not retrieved from bundle or file, make a new
+			// empty one to prevent crashing.
+			if (exerciseList == null) {
 				exerciseList = new ArrayList<Exercise>();
 			}
 			completedExerciseStack = new Stack<Exercise>();
@@ -121,7 +144,7 @@ public class TimerActivity extends ListActivity {
 		// display the list of exercises
 		adapter = new ExerciseAdapter(this, exerciseList);
 		setListAdapter(adapter);
-		
+
 		// grab the first exercise
 		currentExercise = exerciseList.remove(0);
 		adapter.notifyDataSetChanged();
@@ -131,37 +154,19 @@ public class TimerActivity extends ListActivity {
 			// also set title
 			currentExerciseName.setText(currentExercise.getName());
 			unPauseTimer();
-		}else{
+		} else {
 			// start with the first exercise
 			startCountDown(currentExercise);
 		}
-		
+
 	}
 
-
-	public void onPause() {
-		super.onPause();
-		pauseTimer();
-		// notify the user that the timer was paused
-		Toast.makeText(getApplicationContext(), "Timer Paused",
-				Toast.LENGTH_LONG).show();
-		exerciseList.add(0, currentExercise);
-		storage = new StorageManager();
-		storage.putRunningCountDownTimer(countDownTimer, RUNNING, this);
-		storage.putRunningList(exerciseList, RUNNING, this);
-		storage.putRunningStack(completedExerciseStack, RUNNING, this);
-		storage =  null;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(MainMenuActivity.LOG_TAG, "Timer/ onCreate has been called");
 		setContentView(R.layout.timer_layout);
-		
 
-		
-	    
 		// create buttons and other views
 		resetExerciseButton = (Button) findViewById(R.id.reset_exercise);
 		resetFromStartButton = (Button) findViewById(R.id.reset_set_button);
@@ -169,8 +174,13 @@ public class TimerActivity extends ListActivity {
 		currentExerciseName = (TextView) findViewById(R.id.exercise_name);
 		timeDisplay = (TextView) findViewById(R.id.time_display);
 
+		// Create object to control count down functions. i.e. pause, etc
 		countDownTimer = new MyCountDownTimerWrapper(this);
+
+		// This flag allows the activity to exist above the lock screen
+		// needs to be replaced with something that works
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
 		if (!isRunning()) {
 			try {
 				// get the list of exercises
@@ -184,6 +194,7 @@ public class TimerActivity extends ListActivity {
 		}
 
 		theListView = getListView();
+
 		// when an exercise in the list is clicked, start from that exercise
 		theListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -192,7 +203,7 @@ public class TimerActivity extends ListActivity {
 					long arg3) {
 				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				boolean wasPaused = countDownTimer.isPaused();
-				
+
 				countDownTimer.stopTimer();
 				int p = position;
 				completedExerciseStack.push(currentExercise);
@@ -204,8 +215,8 @@ public class TimerActivity extends ListActivity {
 				currentExercise = exerciseList.remove(0);
 				adapter.notifyDataSetChanged();
 				startCountDown(currentExercise);
-				
-				if (wasPaused){
+
+				if (wasPaused) {
 					prepAndPauseTimer();
 				}
 			}
@@ -260,12 +271,12 @@ public class TimerActivity extends ListActivity {
 	public void startCountDown(final Exercise ex) {
 
 		// let the whole application know that the timer is now running
-		SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
-	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
-	    editor.commit();
-		
-		
+		SharedPreferences settings = getSharedPreferences(
+				MainMenuActivity.PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
+		editor.commit();
+
 		// set the display to the name of the current exercise
 		currentExerciseName.setText(ex.getName());
 
@@ -276,17 +287,26 @@ public class TimerActivity extends ListActivity {
 		}
 	}
 
+	/**
+	 * Pauses the current running timer
+	 */
 	public void pauseTimer() {
 		countDownTimer.pauseTimer();
 	}
 
+	/**
+	 * Unpauses the current running timer
+	 */
 	public void unPauseTimer() {
 
 		countDownTimer.unPauseTimer();
 	}
 
+	/**
+	 * Restarts the list of timers from the very beginning
+	 */
 	public void restartFromTop() {
-		
+
 		boolean wasPaused = countDownTimer.isPaused();
 		
 		countDownTimer.stopTimer();
@@ -294,45 +314,57 @@ public class TimerActivity extends ListActivity {
 		if (completedExerciseStack.isEmpty()) {
 			restartExercise();
 		} else {
+			
+			// Stuff all the exercises from the stack back into the list
 			exerciseList.add(0, currentExercise);
 			while (!completedExerciseStack.isEmpty()) {
 				exerciseList.add(0, completedExerciseStack.pop());
 			}
-
+			
+			// Set up the list again and restart timer
 			adapter = new ExerciseAdapter(this, exerciseList);
 			setListAdapter(adapter);
 			currentExercise = exerciseList.remove(0);
 			adapter.notifyDataSetChanged();
 			startCountDown(currentExercise);
 		}
-		
-		if (wasPaused){
+
+		// if it was paused, keep it paused
+		if (wasPaused) {
 			prepAndPauseTimer();
 		}
 	}
 
+	/**
+	 * Restarts the current timer form the beginning
+	 */
 	public void restartExercise() {
 		boolean wasPaused = countDownTimer.isPaused();
 		countDownTimer.stopTimer();
 		startCountDown(currentExercise);
-		
-		if (wasPaused){
+
+		// if it was paused, keep it paused
+		if (wasPaused) {
 			prepAndPauseTimer();
 		}
 
 	}
-	
+
+	/**
+	 * Called when the timer finishes
+	 */
 	public void timerFinish() {
 		if (!(exerciseList.isEmpty())) {
 			completedExerciseStack.push(currentExercise);
-			timeOnClock = exerciseList.get(0).getTime();
 		}
-
+		
+		// Otherwise will display 00:01
 		timeDisplay.setText("00:00");
+		
 		// don't let user click these buttons while media player plays sound
 		resetExerciseButton.setClickable(false);
 		resetFromStartButton.setClickable(false);
-		
+
 		MediaPlayer player = MediaPlayer.create(TimerActivity.this,
 				R.raw.jap_bell);
 		player.start();
@@ -343,49 +375,61 @@ public class TimerActivity extends ListActivity {
 				if (!(exerciseList.isEmpty())) {
 					currentExercise = exerciseList.remove(0);
 					adapter.notifyDataSetChanged();
-					timeDisplay.setText(Exercise.timeToString(currentExercise.getTime()));
+					timeDisplay.setText(Exercise.timeToString(currentExercise
+							.getTime()));
 					startCountDown(currentExercise);
 					countDownTimer.pauseTimer();
-					
+
 					pauseAndStartButton.setText("Start");
-					
-					
-					
-				} else{
+
+				} else {
 					currentExerciseName.setText("All Finished");
 					pauseAndStartButton.setText("Pause");
-					// let the whole application know that the timer is now NOT running
-				    SharedPreferences settings = getSharedPreferences(MainMenuActivity.PREFS_NAME, 0);
-				    SharedPreferences.Editor editor = settings.edit();
-				    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
-				    editor.commit();
+					// let the whole application know that the timer is now NOT
+					// running
+					SharedPreferences settings = getSharedPreferences(
+							MainMenuActivity.PREFS_NAME, 0);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+					editor.commit();
 
 				}
-				
+
+				// Let the user click these buttons now that they do something
 				resetExerciseButton.setClickable(true);
-				resetFromStartButton.setClickable(true);	
-				
+				resetFromStartButton.setClickable(true);
+
 			}
 		});
 
 	}
 
+	/**
+	 * Called when the timer ticks and updates the display
+	 * @param millisUntilFinished 
+	 */
 	public void timerTick(long millisUntilFinished) {
 		timeDisplay.setText(((Exercise.timeToString(millisUntilFinished))));
-		timeOnClock = millisUntilFinished;
 
 	}
 
-	private void prepAndPauseTimer(){
+	/**
+	 * Sets text to exercise name and pauses timer
+	 */
+	private void prepAndPauseTimer() {
 		timeDisplay.setText(Exercise.timeToString(currentExercise.getTime()));
 		countDownTimer.pauseTimer();
 	}
-	
+
+	/**
+	 * Finds out if there is a running timer or not
+	 * 
+	 * @return true or false
+	 */
 	private boolean isRunning() {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
-		return settings.getBoolean(
-				TimerPrepAndRunningActivity.IS_RUNNING_KEY, false);
+		return settings.getBoolean(YogaTimerActivity.IS_RUNNING_KEY, false);
 	}
 
 }
