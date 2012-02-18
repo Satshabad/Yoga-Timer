@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import net.satshabad.android.timersetter.OnTimeSetListener;
 import net.satshabad.android.timersetter.TimerSetter;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,11 +14,14 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
 public class TimerPrepAndRunningActivity extends ListActivity {
+
+	private static final int SAVE_SET_ALERT_DIALOG = 0;
 
 	/**
 	 * A container for the timer setting mechanism
@@ -49,6 +54,8 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	private Button resumeButton;
 
 	private Button cancelButton;
+
+	private StorageManager storageManager ;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -190,7 +197,11 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 
 	}
 
-	public void startTimer(View v) {
+	/**
+	 * Called from xml layout start button
+	 * @param v
+	 */
+	public void onStartClick(View v) {
 		v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 
 		// If there are no exercises, don't start timer.
@@ -204,4 +215,40 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 		startActivity(newIntent);
 
 	}
+	
+	public void onSaveClick(View v) {
+		showDialog(SAVE_SET_ALERT_DIALOG);
+	}
+	
+	public void saveSet(String setName){
+		storageManager = new StorageManager();
+		
+	}
+	
+    protected AlertDialog onCreateDialog(int id) {
+        AlertDialog dialog;
+        
+        if(id == SAVE_SET_ALERT_DIALOG){
+        	final EditText input = new EditText(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Please enter a name")
+                   .setCancelable(false)
+                   .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                            TimerPrepAndRunningActivity.this.saveSet(input.getText().toString());
+                       }
+                   })
+                   .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                       }
+                   }).setView(input);
+
+            dialog = builder.create();
+            
+        }else{
+            dialog = null;
+        }
+        return dialog;
+    }
 }
