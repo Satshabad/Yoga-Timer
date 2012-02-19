@@ -76,6 +76,12 @@ public class StorageManager {
 	
 	public void addSetKey(String setName, Activity callingActivity) {
 		ArrayList<String> keysList = getSetKeysFromFile(callingActivity);
+		
+		if (keysList == null){
+			putKeysToFile(new ArrayList<String>(), callingActivity);
+			keysList = getSetKeysFromFile(callingActivity);
+		}
+		
 		keysList.add(setName);
 		putKeysToFile(keysList, callingActivity);
 	}
@@ -128,7 +134,6 @@ public class StorageManager {
 								+ description + " from file");
 				e.printStackTrace();
 			}
-
 		}
 		return null;
 	}

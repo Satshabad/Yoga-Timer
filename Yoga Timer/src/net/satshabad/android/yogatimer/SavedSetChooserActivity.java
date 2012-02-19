@@ -1,14 +1,24 @@
 package net.satshabad.android.yogatimer;
 
-import android.app.Activity;
-import android.os.Bundle;
+import java.util.ArrayList;
 
-public class SavedSetChooserActivity extends Activity{
+import android.app.ListActivity;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+
+public class SavedSetChooserActivity extends ListActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		//setContentView(R.layout.saved_set_chooser_layout);
+		
+		StorageManager storage = new StorageManager();
+		
+		ArrayList<String> nameList = storage.getSetKeysFromFile(this);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.set_row, nameList);
+		setListAdapter(adapter);
 	}
 
 }

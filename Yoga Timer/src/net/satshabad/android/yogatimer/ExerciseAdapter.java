@@ -21,7 +21,7 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise> {
     private Context context;
 
     public ExerciseAdapter(Context context, List<Exercise> objects) {
-        super(context, R.layout.row, R.id.name_in_row, objects);
+        super(context, R.layout.exercise_row, R.id.name_in_row, objects);
         exercises = (ArrayList<Exercise>) objects;
         this.context = context;
     }

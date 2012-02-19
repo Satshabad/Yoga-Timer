@@ -31,15 +31,11 @@ public class MainMenuActivity extends Activity {
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
 	    editor.commit();
-	    
-        
-        StorageManager manager = new StorageManager();
-        manager.putKeysToFile(new ArrayList<String>(), this);
-        manager = null;
-        
-        
+	     
         // this button leads to the timerPrep activity
         Button newSet = (Button)findViewById(R.id.the_new_button);
+        
+        Button savedSet = (Button) findViewById(R.id.the_saved_button);
         
         //on the click the timerPrep activity will launch
         newSet.setOnClickListener(new OnClickListener()
@@ -52,6 +48,16 @@ public class MainMenuActivity extends Activity {
             launchTimer(); 
          }
       });
+        
+        savedSet.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+				launchChooser();
+			}
+		});
+        
   }
     
     /**
@@ -63,5 +69,9 @@ public class MainMenuActivity extends Activity {
        Log.d(LOG_TAG, "YogaTimerActivity/ActivityStart/TimerPrep");
        startActivity(new Intent(this, TimerPrepAndRunningActivity.class));
        
+    }
+    
+    private void launchChooser(){
+    	startActivity(new Intent(this, SavedSetChooserActivity.class));
     }
 }
