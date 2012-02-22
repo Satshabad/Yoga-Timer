@@ -221,6 +221,12 @@ public class TimerPrepAndRunningActivity extends ListActivity {
 	}
 	
 	public void saveSet(String setName){
+		
+		// This is to prevent a bug the the storage manager. gotta be fixed later.
+		if(setName == "_COUNT"||setName == "_LIST"||setName == "_STACK"||setName == "_KEYS"){
+			return;
+		}
+		
 		storageManager = new StorageManager();
 		storageManager.putSet(exerciseList, setName, this);
 		storageManager.addSetKey(setName, this);
