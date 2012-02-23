@@ -29,7 +29,7 @@ public class MainMenuActivity extends Activity {
         
 	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+	    editor.putBoolean(MainMenuActivity.IS_RUNNING_PREF_KEY, false);
 	    editor.commit();
 	     
         // this button leads to the timerPrep activity

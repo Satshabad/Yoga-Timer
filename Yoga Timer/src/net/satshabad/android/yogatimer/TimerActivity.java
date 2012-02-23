@@ -266,7 +266,7 @@ public class TimerActivity extends ListActivity {
 		SharedPreferences settings = getSharedPreferences(
 				MainMenuActivity.PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, true);
+		editor.putBoolean(MainMenuActivity.IS_RUNNING_PREF_KEY, true);
 		editor.commit();
 
 		// set the display to the name of the current exercise
@@ -382,7 +382,7 @@ public class TimerActivity extends ListActivity {
 					SharedPreferences settings = getSharedPreferences(
 							MainMenuActivity.PREFS_NAME, 0);
 					SharedPreferences.Editor editor = settings.edit();
-					editor.putBoolean(TimerPrepActivity.IS_RUNNING_KEY, false);
+					editor.putBoolean(MainMenuActivity.IS_RUNNING_PREF_KEY, false);
 					editor.commit();
 
 				}
